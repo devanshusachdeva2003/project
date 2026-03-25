@@ -32,11 +32,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Quill Dark Theme Styling
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const quillStyles = `
-  .quill-editor .ql-toolbar {
-    background-color: rgb(51, 65, 85, 0.5) !important;
-    border: 1px solid rgb(71, 85, 105, 0.5) !important;
-    border-radius: 0.5rem 0.5rem 0 0 !important;
+.quill-editor .ql-toolbar {
+  background-color: rgb(51, 65, 85, 0.5) !important;
+  border: 1px solid rgb(71, 85, 105, 0.5) !important;
+  border-radius: 0.5rem 0.5rem 0 0 !important;
   }
   .quill-editor .ql-container {
     background-color: rgb(51, 65, 85, 0.3) !important;
@@ -147,7 +148,7 @@ const [editName, setEditName] = useState("");
   const fetchPosts = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:5000/api/blog", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -179,7 +180,7 @@ useEffect(() => {
 // FETCH PROFILE
 const fetchProfile = async () => {
   try {
-    const res = await fetch("http://localhost:5000/api/me", {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -189,7 +190,7 @@ const fetchProfile = async () => {
       username: data.username || "user",
       name: data.name || "User",
       joined: new Date(data.createdAt).toLocaleDateString(),
-      avatar: data.avatar ? `http://localhost:5000${data.avatar}` : "",
+      avatar: data.avatar ? `${VITE_API_BASE_URL}${data.avatar}` : "",
     });
     // ✅ ALSO UPDATE LOCALSTORAGE
     localStorage.setItem("user", JSON.stringify(data));
@@ -236,8 +237,8 @@ const fetchProfile = async () => {
     }
 
     const url = editingId
-      ? `http://localhost:5000/api/blog/${editingId}`
-      : "http://localhost:5000/api/blog";
+      ? `${VITE_API_BASE_URL}/api/blog/${editingId}`
+      : `${VITE_API_BASE_URL}/api/blog`;
 
     const method = editingId ? "PUT" : "POST";
 
@@ -279,7 +280,7 @@ const fetchProfile = async () => {
     if (!window.confirm("Delete post?")) return;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/blog/${id}`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -300,14 +301,14 @@ const fetchProfile = async () => {
     setTopic(post.topic || "");
     setContent(post.content);
     if (post.coverImage)
-      setCoverPreview(`http://localhost:5000${post.coverImage}`);
+      setCoverPreview(`${VITE_API_BASE_URL}${post.coverImage}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // ---------------- LIKE ----------------
   const likePost = async (postId) => {
     try {
-      await fetch(`http://localhost:5000/api/blog/${postId}/like`, {
+      await fetch(`${VITE_API_BASE_URL}/api/blog/${postId}/like`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -334,7 +335,7 @@ const fetchProfile = async () => {
   // ---------------- SAVE ----------------
  const savePost = async (id) => {
   try {
-    const res = await fetch(`http://localhost:5000/api/blog/${id}/save`, {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}/save`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -366,7 +367,7 @@ const fetchProfile = async () => {
     if (!commentText || !selectedPostId) return;
 
     try {
-      await fetch(`http://localhost:5000/api/blog/${selectedPostId}/comment`, {
+      await fetch(`${VITE_API_BASE_URL}/api/blog/${selectedPostId}/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -742,7 +743,7 @@ const fetchProfile = async () => {
                     {/* RIGHT: Image */}
                     {post.coverImage && (
                       <img
-                        src={`http://localhost:5000${post.coverImage}`}
+                        src={`${VITE_API_BASE_URL}${post.coverImage}`}
                         className="w-32 h-32 object-cover rounded-xl group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300"
                       />
                     )}

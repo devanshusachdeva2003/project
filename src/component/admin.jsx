@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import ManagePosts from "./post2";
 import ManageUsers from "./manage";
 
+
 export default function AdminDashboard() {
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [activeTab, setActiveTab] = useState("posts");
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);
@@ -27,7 +29,7 @@ export default function AdminDashboard() {
   // Fetch blog posts
   const fetchPosts = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/blog", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +55,7 @@ export default function AdminDashboard() {
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/users", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -82,7 +84,7 @@ export default function AdminDashboard() {
   // Delete post
   const handleDeletePost = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/blog/${id}`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,7 +102,7 @@ export default function AdminDashboard() {
   // Edit post
   const handleEditPost = async (id, title, content) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/blog/${id}`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -120,7 +122,7 @@ export default function AdminDashboard() {
   // Create post
   const handleCreatePost = async (title, content) => {
     try {
-      const res = await fetch("http://localhost:5000/api/blog", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +142,7 @@ export default function AdminDashboard() {
   // Delete user
   const handleDeleteUser = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${id}`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/users/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -158,7 +160,7 @@ export default function AdminDashboard() {
   // Change role
   const handleRoleChange = async (id, newRole) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/users/${id}/role`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/users/${id}/role`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

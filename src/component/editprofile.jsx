@@ -9,7 +9,8 @@ export default function EditProfile() {
     bio: "",
     avatar: "",
   });
-
+  
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [avatarFile, setAvatarFile] = useState(null);
   const [postCount, setPostCount] = useState(0); // ✅ blog count
 
@@ -27,7 +28,7 @@ export default function EditProfile() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/profile", {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -39,7 +40,7 @@ export default function EditProfile() {
           email: data.email || "",
           bio: data.bio || "",
           avatar: data.avatar
-            ? `http://localhost:5000${data.avatar}`
+            ? `${VITE_API_BASE_URL}${data.avatar}`
             : "",
         });
 
@@ -65,7 +66,7 @@ export default function EditProfile() {
         formData.append("avatar", avatarFile);
       }
 
-      const res = await fetch("http://localhost:5000/api/profile", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/profile`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -86,7 +87,7 @@ export default function EditProfile() {
         email: data.email || "",
         bio: data.bio || "",
         avatar: data.avatar
-          ? `http://localhost:5000${data.avatar}`
+          ? `${VITE_API_BASE_URL}${data.avatar}`
           : "",
       });
 
@@ -107,7 +108,7 @@ export default function EditProfile() {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/change-password", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/change-password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

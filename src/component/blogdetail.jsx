@@ -4,6 +4,7 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 
 export default function BlogDetails() {
   const { id } = useParams();
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const navigate = useNavigate();
 
   const [blog, setBlog] = useState(null);
@@ -15,7 +16,7 @@ export default function BlogDetails() {
   // FETCH BLOG
   const fetchBlog = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/blog/${id}`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -34,7 +35,7 @@ export default function BlogDetails() {
     if (!commentText) return;
 
     try {
-      await fetch(`http://localhost:5000/api/blog/${id}/comment`, {
+      await fetch(`${VITE_API_BASE_URL}/api/blog/${id}/comment`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export default function BlogDetails() {
       if (!window.confirm("Delete this comment?")) return;
 
       await fetch(
-        `http://localhost:5000/api/blog/${id}/comment/${commentId}`,
+        `${VITE_API_BASE_URL}/api/blog/${id}/comment/${commentId}`,
         {
           method: "DELETE",
           headers: {
@@ -106,7 +107,7 @@ export default function BlogDetails() {
           {/* Cover Image */}
           {blog.coverImage && (
             <img
-              src={`http://localhost:5000${blog.coverImage}`}
+              src={`${VITE_API_BASE_URL}${blog.coverImage}`}
               alt="blog cover"
               className="w-full h-96 object-cover rounded-xl mb-8 shadow-lg shadow-indigo-500/20"
             />

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 import {
   Tabs,
   TabsList,
@@ -14,7 +15,7 @@ export default function PublicBlogs() {
 
  useEffect(() => {
     // Fetching the posts from the API
-    fetch("http://localhost:5000/api/blog")
+    fetch(`${VITE_API_BASE_URL}/api/blog`)
       .then((res) => res.json())
       .then((data) => setPosts(data));
 
@@ -53,7 +54,7 @@ export default function PublicBlogs() {
 
             {featured.coverImage && (
               <img
-                src={`http://localhost:5000${featured.coverImage}`}
+                src={`${VITE_API_BASE_URL}${featured.coverImage}`}
                 alt={featured.title}
                 className="w-full h-full object-cover md:h-[420px]"
               />
@@ -158,7 +159,7 @@ function BlogGrid({ posts }) {
 
           {post.coverImage && (
             <img
-              src={`http://localhost:5000${post.coverImage}`}
+              src={`${VITE_API_BASE_URL}${post.coverImage}`}
               alt={post.title}
               className="w-full h-52 object-cover"
             />

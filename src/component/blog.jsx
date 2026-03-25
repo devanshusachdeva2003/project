@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-
 function Blog() {
   const [posts, setPosts] = useState([]);
   const [commentText, setCommentText] = useState("");
-
+  
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const token = localStorage.getItem("token");
-
+  
   // FETCH POSTS
   const fetchPosts = () => {
-    fetch("http://localhost:5000/api/blog")
+    fetch(`${VITE_API_BASE_URL}/api/blog`)
       .then((res) => res.json())
       .then((data) => setPosts(data));
   };
@@ -19,7 +19,7 @@ function Blog() {
 
   // LIKE POST
   const likePost = async (id) => {
-    await fetch(`http://localhost:5000/api/blog/${id}/like`, {
+    await fetch(`${VITE_API_BASE_URL}/api/blog/${id}/like`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -31,7 +31,7 @@ function Blog() {
 
   // SAVE POST
   const savePost = async (id) => {
-    await fetch(`http://localhost:5000/api/blog/${id}/save`, {
+    await fetch(`${VITE_API_BASE_URL}/api/blog/${id}/save`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ function Blog() {
   const addComment = async (id) => {
     if (!commentText) return;
 
-    await fetch(`http://localhost:5000/api/blog/${id}/comment`, {
+    await fetch(`${VITE_API_BASE_URL}/api/blog/${id}/comment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

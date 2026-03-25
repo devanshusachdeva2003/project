@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2, Bookmark } from "lucide-react";
 import { toast } from "react-toastify";
-
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 export default function SavedPosts() {
   const [savedPosts, setSavedPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,7 +19,7 @@ export default function SavedPosts() {
 
     try {
       setIsLoading(true);
-      const res = await fetch("http://localhost:5000/api/blog/saved/me", {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/saved/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -45,7 +45,7 @@ export default function SavedPosts() {
   // ---------------- UNSAVE POST ----------------
   const unsavePost = async (postId) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/blog/${postId}/save`, {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${postId}/save`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -82,7 +82,7 @@ export default function SavedPosts() {
               {post.topic && <p className="text-xs text-indigo-400 font-semibold mb-2">#{post.topic}</p>}
               {post.coverImage && (
                 <img
-                  src={`http://localhost:5000${post.coverImage}`}
+                  src={`${VITE_API_BASE_URL}${post.coverImage}`}
                   className="w-full h-60 object-cover rounded-lg mb-4"
                   alt="cover"
                 />

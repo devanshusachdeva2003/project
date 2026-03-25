@@ -6,6 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Log() {
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 
   const navigate = useNavigate();
 
@@ -32,7 +33,7 @@ export default function Log() {
     try {
 
       const response = await axios.post(
-        "http://localhost:5000/api/login",
+        `${VITE_API_BASE_URL}/api/login`,
         loginData
       );
 

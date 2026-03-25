@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -28,7 +29,7 @@ export default function Register() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/register",
+        `${VITE_API_BASE_URL}/api/register`,
         {
           name: formData.name,
           username: formData.username,

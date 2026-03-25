@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-
 export default function TrendingPosts() {
   const [posts, setPosts] = useState([]);
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
+  
   // Fetch trending posts when the component is mounted
   useEffect(() => {
     const fetchTrending = async () => {
       try {
         setIsLoading(true);
         // Fetch all blog posts
-        const res = await fetch("http://localhost:5000/api/blog", {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/blog`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -62,7 +62,7 @@ export default function TrendingPosts() {
         {posts.map((post) => (
           <div key={post._id} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border border-slate-700/50 p-6 rounded-2xl hover:border-slate-600/50 transition-all duration-300 transform hover:scale-105 flex flex-col shadow-xl hover:shadow-indigo-500/20">
             {post.topic && <p className="text-xs text-indigo-400 font-semibold mb-2">#{post.topic}</p>}
-            {post.coverImage && <img src={`http://localhost:5000${post.coverImage}`} className="w-full h-60 object-cover rounded-lg mb-4" alt="cover" />}
+            {post.coverImage && <img src={`${VITE_API_BASE_URL}${post.coverImage}`} className="w-full h-60 object-cover rounded-lg mb-4" alt="cover" />}
             <h2 className="text-xl font-bold text-white mb-2">{post.title}</h2>
             <p className="text-gray-300 mb-4">{post.content.replace(/<[^>]*>?/gm, "").slice(0, 150)}...</p>
             <div className="mt-auto mb-4">
