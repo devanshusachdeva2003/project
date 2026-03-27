@@ -35,15 +35,16 @@ export default function EditProfile() {
         const data = await res.json();
 
         setProfile({
-          name: data.name || "",
-          username: data.username || "",
-          email: data.email || "",
-          bio: data.bio || "",
-          avatar: data.avatar
-            ? `${VITE_API_BASE_URL}${data.avatar}`
-            : "",
-        });
-
+  name: data.name || "",
+  username: data.username || "",
+  email: data.email || "",
+  bio: data.bio || "",
+  avatar: data.avatar
+    ? data.avatar.startsWith("http")
+      ? data.avatar
+      : `${VITE_API_BASE_URL}${data.avatar}`
+    : "",
+});
         setPostCount(data.postCount || 0); // ✅ blog count
       } catch {
         // Error loading profile
@@ -86,11 +87,12 @@ export default function EditProfile() {
         username: data.username || "",
         email: data.email || "",
         bio: data.bio || "",
-        avatar: data.avatar
-          ? `${VITE_API_BASE_URL}${data.avatar}`
-          : "",
-      });
-
+         avatar: data.avatar
+  ? data.avatar.startsWith("http")
+    ? data.avatar
+    : `${VITE_API_BASE_URL}${data.avatar}`
+  : "",
+});
       setAvatarFile(null);
       localStorage.setItem("user", JSON.stringify(data));
 
