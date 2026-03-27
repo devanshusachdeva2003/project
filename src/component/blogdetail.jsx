@@ -116,14 +116,14 @@ export default function BlogDetails() {
         <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl p-8 mb-8">
           
           {/* Cover */}
-       {blog.coverImage && (
+  {blog.coverImage && (
   <img
     src={
-      blog.coverImage
-        ? blog.coverImage.startsWith("http")
-          ? blog.coverImage.replace("https//", "https://") // ✅ fix broken cloudinary
-          : `${VITE_API_BASE_URL}${blog.coverImage}`       // ✅ local image
-        : ""
+      blog.coverImage.includes("cloudinary")
+        ? blog.coverImage.replace("https//", "https://") // ✅ fix broken cloudinary
+        : blog.coverImage.startsWith("http")
+        ? blog.coverImage
+        : `${VITE_API_BASE_URL}${blog.coverImage}`
     }
     alt="blog cover"
     className="w-full h-64 md:h-96 object-cover rounded-xl mb-6"
