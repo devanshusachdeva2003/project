@@ -742,16 +742,23 @@ const fetchProfile = async () => {
                       )}
                     </div>
 
-                    {/* RIGHT: Image */}
-                    {post.coverImage && (
-                     <img
-  src={
-    post.coverImage?.startsWith("http")
-      ? post.coverImage
-      : `${VITE_API_BASE_URL}${post.coverImage}`
-  }
-/>
-                    )}
+                   {/* RIGHT: Image */}
+{post.coverImage && (
+  <div className="relative w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
+    <img
+      src={
+        post.coverImage.startsWith("http")
+          ? post.coverImage
+          : `${VITE_API_BASE_URL}${post.coverImage}`
+      }
+      alt="cover"
+      className="w-full h-full object-cover"
+    />
+
+    {/* Gradient overlay */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+  </div>
+)}
                   </div>
                 </div>
               ))}
