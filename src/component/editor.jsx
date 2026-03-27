@@ -32,7 +32,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Quill Dark Theme Styling
-const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
 const quillStyles = `
 .quill-editor .ql-toolbar {
   background-color: rgb(51, 65, 85, 0.5) !important;
@@ -190,7 +190,7 @@ const fetchProfile = async () => {
       username: data.username || "user",
       name: data.name || "User",
       joined: new Date(data.createdAt).toLocaleDateString(),
-      avatar: data.avatar || "",
+      avatar: data.avatar ? `${VITE_API_BASE_URL}${data.avatar}` : "",
     });
     // ✅ ALSO UPDATE LOCALSTORAGE
     localStorage.setItem("user", JSON.stringify(data));
@@ -301,7 +301,7 @@ const fetchProfile = async () => {
     setTopic(post.topic || "");
     setContent(post.content);
     if (post.coverImage)
-      setCoverPreview(post.coverImage);
+      setCoverPreview(`${VITE_API_BASE_URL}${post.coverImage}`);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -743,7 +743,7 @@ const fetchProfile = async () => {
                     {/* RIGHT: Image */}
                     {post.coverImage && (
                       <img
-                        src={post.coverImage}
+                        src={`${VITE_API_BASE_URL}${post.coverImage}`}
                         className="w-32 h-32 object-cover rounded-xl group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300"
                       />
                     )}

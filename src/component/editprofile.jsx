@@ -10,7 +10,7 @@ export default function EditProfile() {
     avatar: "",
   });
   
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
   const [avatarFile, setAvatarFile] = useState(null);
   const [postCount, setPostCount] = useState(0); // ✅ blog count
 
@@ -40,7 +40,8 @@ export default function EditProfile() {
           email: data.email || "",
           bio: data.bio || "",
           avatar: data.avatar
-            || "",
+            ? `${VITE_API_BASE_URL}${data.avatar}`
+            : "",
         });
 
         setPostCount(data.postCount || 0); // ✅ blog count
@@ -86,7 +87,8 @@ export default function EditProfile() {
         email: data.email || "",
         bio: data.bio || "",
         avatar: data.avatar
-          || "",
+          ? `${VITE_API_BASE_URL}${data.avatar}`
+          : "",
       });
 
       setAvatarFile(null);
