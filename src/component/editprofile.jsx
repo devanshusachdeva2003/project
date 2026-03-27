@@ -10,7 +10,7 @@ export default function EditProfile() {
     avatar: "",
   });
   
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [avatarFile, setAvatarFile] = useState(null);
   const [postCount, setPostCount] = useState(0); // ✅ blog count
 
