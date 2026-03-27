@@ -139,14 +139,7 @@ export default function BlogDetails() {
           <div
             className="
               prose max-w-none mb-12
-
-              !text-white
-              prose-headings:!text-white
-              prose-p:!text-white
-              prose-li:!text-white
-              prose-strong:!text-white
-              prose-a:!text-white
-
+              [&_*]:!text-white
               break-words
               [overflow-wrap:anywhere]
               prose-pre:overflow-x-auto
@@ -156,7 +149,7 @@ export default function BlogDetails() {
             {parse(blog.content)}
           </div>
 
-        </div> {/* ✅ CLOSE MAIN CARD */}
+        </div>
 
         {/* ================= COMMENTS ================= */}
         {role === "admin" && (
@@ -210,7 +203,7 @@ export default function BlogDetails() {
           </div>
         )}
 
-      </div> {/* ✅ CLOSE CONTAINER */}
-    </div> /* ✅ CLOSE ROOT */
+      </div>
+    </div>
   );
 }
