@@ -3,7 +3,7 @@ function Blog() {
   const [posts, setPosts] = useState([]);
   const [commentText, setCommentText] = useState("");
   
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const token = localStorage.getItem("token");
   
   // FETCH POSTS

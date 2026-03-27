@@ -32,7 +32,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Quill Dark Theme Styling
-const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 const quillStyles = `
 .quill-editor .ql-toolbar {
   background-color: rgb(51, 65, 85, 0.5) !important;

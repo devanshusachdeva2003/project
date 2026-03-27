@@ -4,7 +4,7 @@ import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 export default function TrendingPosts() {
   const [posts, setPosts] = useState([]);
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [isLoading, setIsLoading] = useState(true);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();

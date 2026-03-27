@@ -5,7 +5,7 @@ export default function Log() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate(); // ✅ must be inside component
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 
   const handleLogin = async () => {
   const res = await fetch(`${VITE_API_BASE_URL}/api/login`, {

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Tabs,
   TabsList,

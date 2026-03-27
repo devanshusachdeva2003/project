@@ -6,7 +6,7 @@ import ManageUsers from "./manage";
 
 
 export default function AdminDashboard() {
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [activeTab, setActiveTab] = useState("posts");
   const [posts, setPosts] = useState([]);
   const [users, setUsers] = useState([]);

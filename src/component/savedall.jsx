@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2, Bookmark } from "lucide-react";
 import { toast } from "react-toastify";
-const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000";
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 export default function SavedPosts() {
   const [savedPosts, setSavedPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
