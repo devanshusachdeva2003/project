@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
-
+import parse from "html-react-parser";
 export default function BlogDetails() {
   const { id } = useParams();
   const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
@@ -135,12 +135,9 @@ export default function BlogDetails() {
           </div>
 
           {/* Content */}
-          <div
-            className="prose prose-invert max-w-none text-gray-300 mb-12"
-            dangerouslySetInnerHTML={{ __html: blog.content }}
-          />
-        </div>
-
+          <div className="prose prose-invert max-w-none text-gray-300 mb-12">
+  {parse(blog.content)}
+</div>
         {/* ================= COMMENTS SECTION ================= */}
         {role === "admin" && (
           <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border border-slate-700/50 rounded-2xl p-8">
