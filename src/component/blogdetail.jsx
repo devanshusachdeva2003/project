@@ -70,6 +70,18 @@ export default function BlogDetails() {
     } catch {}
   };
 
+  // 🔥 CLEAN HTML CONTENT (REMOVE INLINE COLORS)
+  const cleanContent =
+    blog &&
+    parse(blog.content, {
+      replace: (domNode) => {
+        if (domNode.attribs) {
+          delete domNode.attribs.style;
+          delete domNode.attribs.color;
+        }
+      },
+    });
+
   if (!blog) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
@@ -135,7 +147,7 @@ export default function BlogDetails() {
             </span>
           </div>
 
-          {/* Blog Content */}
+          {/* ✅ Blog Content (FIXED) */}
           <div
             className="
               prose max-w-none mb-12
@@ -146,7 +158,7 @@ export default function BlogDetails() {
               prose-img:max-w-full
             "
           >
-            {parse(blog.content)}
+            {cleanContent}
           </div>
 
         </div>
