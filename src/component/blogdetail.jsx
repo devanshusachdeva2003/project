@@ -136,25 +136,23 @@ export default function BlogDetails() {
           </div>
 
           {/* Blog Content */}
-         <div
-  className="
-    prose max-w-none mb-12
+          <div
+            className="
+              prose max-w-none mb-12
 
-    !text-white
-    prose-headings:!text-white
-    prose-p:!text-white
-    prose-li:!text-white
-    prose-strong:!text-white
-    prose-a:!text-white
+              !text-white
+              prose-headings:!text-white
+              prose-p:!text-white
+              prose-li:!text-white
+              prose-strong:!text-white
+              prose-a:!text-white
 
-    break-words
-    [overflow-wrap:anywhere]
-    prose-pre:overflow-x-auto
-    prose-img:max-w-full
-  "
->
-  {parse(blog.content)}
-</div>
+              break-words
+              [overflow-wrap:anywhere]
+              prose-pre:overflow-x-auto
+              prose-img:max-w-full
+            "
+          >
             {parse(blog.content)}
           </div>
 
@@ -194,7 +192,7 @@ export default function BlogDetails() {
                     className="bg-slate-700 p-4 rounded-lg flex justify-between"
                   >
                     <div>
-                      <p>{c.text}</p>
+                      <p className="text-white">{c.text}</p>
                       <p className="text-xs text-gray-400">
                         {c.username} · {new Date(c.createdAt).toLocaleString()}
                       </p>
