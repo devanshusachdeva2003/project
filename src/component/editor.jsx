@@ -190,7 +190,7 @@ const fetchProfile = async () => {
       username: data.username || "user",
       name: data.name || "User",
       joined: new Date(data.createdAt).toLocaleDateString(),
-      avatar: data.avatar ? `${VITE_API_BASE_URL}${data.avatar}` : "",
+      avatar: data.avatar || "",
     });
     // ✅ ALSO UPDATE LOCALSTORAGE
     localStorage.setItem("user", JSON.stringify(data));
@@ -301,7 +301,7 @@ const fetchProfile = async () => {
     setTopic(post.topic || "");
     setContent(post.content);
     if (post.coverImage)
-      setCoverPreview(`${VITE_API_BASE_URL}${post.coverImage}`);
+      setCoverPreview(post.coverImage);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -743,7 +743,7 @@ const fetchProfile = async () => {
                     {/* RIGHT: Image */}
                     {post.coverImage && (
                       <img
-                        src={`${VITE_API_BASE_URL}${post.coverImage}`}
+                        src={post.coverImage}
                         className="w-32 h-32 object-cover rounded-xl group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300"
                       />
                     )}

@@ -40,8 +40,7 @@ export default function EditProfile() {
           email: data.email || "",
           bio: data.bio || "",
           avatar: data.avatar
-            ? `${VITE_API_BASE_URL}${data.avatar}`
-            : "",
+            || "",
         });
 
         setPostCount(data.postCount || 0); // ✅ blog count
@@ -87,8 +86,7 @@ export default function EditProfile() {
         email: data.email || "",
         bio: data.bio || "",
         avatar: data.avatar
-          ? `${VITE_API_BASE_URL}${data.avatar}`
-          : "",
+          || "",
       });
 
       setAvatarFile(null);
