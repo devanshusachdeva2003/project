@@ -62,9 +62,15 @@ export default function TrendingPosts() {
         {posts.map((post) => (
           <div key={post._id} className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border border-slate-700/50 p-6 rounded-2xl hover:border-slate-600/50 transition-all duration-300 transform hover:scale-105 flex flex-col shadow-xl hover:shadow-indigo-500/20">
             {post.topic && <p className="text-xs text-indigo-400 font-semibold mb-2">#{post.topic}</p>}
-            {post.coverImage && (
+          {post.coverImage && (
   <img
-    src={`${VITE_API_BASE_URL}${post.coverImage}`}
+    src={
+      post.coverImage.includes("cloudinary")
+        ? post.coverImage.replace("https//", "https://") // ✅ fix broken cloudinary
+        : post.coverImage.startsWith("http")
+        ? post.coverImage
+        : `${VITE_API_BASE_URL}${post.coverImage}`
+    }
     className="w-full h-60 object-cover rounded-lg mb-4"
     alt="cover"
   />
