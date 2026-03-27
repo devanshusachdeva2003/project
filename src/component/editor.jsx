@@ -752,7 +752,6 @@ const fetchProfile = async () => {
           : `${VITE_API_BASE_URL}${post.coverImage}`
       }
       alt="cover"
-      className="w-full h-full object-cover"
     />
 
     {/* Gradient overlay */}
