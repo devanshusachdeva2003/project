@@ -120,7 +120,6 @@ export default function BlogDetails() {
             <img
               src={`${VITE_API_BASE_URL}${blog.coverImage}`}
               alt="blog cover"
-              className="w-full h-96 object-cover rounded-xl mb-8"
             />
           )}
 
