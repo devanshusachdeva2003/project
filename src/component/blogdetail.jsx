@@ -136,18 +136,25 @@ export default function BlogDetails() {
           </div>
 
           {/* Blog Content */}
-          <div
-            className="
-              prose prose-invert max-w-none
-              prose-p:text-white
-              prose-headings:text-white
-              prose-li:text-white
-              break-words
-              [overflow-wrap:anywhere]
-              prose-pre:overflow-x-auto
-              prose-img:max-w-full
-            "
-          >
+         <div
+  className="
+    prose max-w-none mb-12
+
+    !text-white
+    prose-headings:!text-white
+    prose-p:!text-white
+    prose-li:!text-white
+    prose-strong:!text-white
+    prose-a:!text-white
+
+    break-words
+    [overflow-wrap:anywhere]
+    prose-pre:overflow-x-auto
+    prose-img:max-w-full
+  "
+>
+  {parse(blog.content)}
+</div>
             {parse(blog.content)}
           </div>
 
