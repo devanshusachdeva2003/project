@@ -190,7 +190,9 @@ const fetchProfile = async () => {
       username: data.username || "user",
       name: data.name || "User",
       joined: new Date(data.createdAt).toLocaleDateString(),
-      avatar: data.avatar ? `${VITE_API_BASE_URL}${data.avatar}` : "",
+      avatar: data.avatar?.startsWith("http")
+  ? data.avatar
+  : `${VITE_API_BASE_URL}${data.avatar}`
     });
     // ✅ ALSO UPDATE LOCALSTORAGE
     localStorage.setItem("user", JSON.stringify(data));
@@ -742,10 +744,13 @@ const fetchProfile = async () => {
 
                     {/* RIGHT: Image */}
                     {post.coverImage && (
-                      <img
-                        src={`${VITE_API_BASE_URL}${post.coverImage}`}
-                        className="w-32 h-32 object-cover rounded-xl group-hover:shadow-lg group-hover:shadow-indigo-500/30 transition-all duration-300"
-                      />
+                     <img
+  src={
+    post.coverImage?.startsWith("http")
+      ? post.coverImage
+      : `${VITE_API_BASE_URL}${post.coverImage}`
+  }
+/>
                     )}
                   </div>
                 </div>

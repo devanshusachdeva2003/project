@@ -39,11 +39,11 @@ export default function EditProfile() {
   username: data.username || "",
   email: data.email || "",
   bio: data.bio || "",
-  avatar: data.avatar
-    ? data.avatar.startsWith("http")
-      ? data.avatar
-      : `${VITE_API_BASE_URL}${data.avatar}`
-    : "",
+ avatar: data.avatar
+  ? data.avatar.startsWith("http")
+    ? data.avatar.replace("https//", "https://") // fix broken cloudinary
+    : `${VITE_API_BASE_URL}${data.avatar}`       // local image
+  : "",
 });
         setPostCount(data.postCount || 0); // ✅ blog count
       } catch {
