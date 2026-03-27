@@ -135,7 +135,17 @@ export default function BlogDetails() {
           </div>
 
           {/* Content */}
-          <div className="prose prose-invert max-w-none text-gray-300 mb-12">
+         <div
+  className="
+    prose prose-invert max-w-none mb-12
+    prose-p:text-white
+    prose-headings:text-white
+    prose-li:text-white
+
+    break-words
+    overflow-hidden
+  "
+>
   {parse(blog.content)}
 </div>
         {/* ================= COMMENTS SECTION ================= */}
