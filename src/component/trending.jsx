@@ -63,15 +63,34 @@ export default function TrendingPosts() {
             )}
 
             {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
-            <img
-  src={
-    post.coverImage?.trim().startsWith("http")
-      ? post.coverImage.trim().replace("https//", "https://")
-      : `${VITE_API_BASE_URL}/${post.coverImage?.trim().replace(/^\/+/, "")}`
-  }
-  className="w-full h-60 object-cover rounded-lg mb-4"
-  alt="cover"
-/>
+            {post.coverImage && (
+  <img
+    src={
+      (() => {
+        let img = post.coverImage;
+
+        if (!img) return "";
+
+        img = img.trim();
+
+        // Fix broken cloudinary URL
+        if (img.includes("res.cloudinary.com")) {
+          return img.replace("https//", "https://");
+        }
+
+        // If already full URL
+        if (img.startsWith("http")) {
+          return img;
+        }
+
+        // Local image (VERY IMPORTANT FIX)
+        return `${VITE_API_BASE_URL}/${img.replace(/^\/+/, "")}`;
+      })()
+    }
+    className="w-full h-60 object-cover rounded-lg mb-4"
+    alt="cover"
+  />
+)}
             <h2 className="text-xl font-bold mb-2">{post.title}</h2>
 
             <p className="text-gray-300 mb-4">
@@ -93,6 +112,7 @@ export default function TrendingPosts() {
             <p className="text-sm mt-3">
               ❤️ {post.likes?.length || 0}
             </p>
+            console.log("IMAGE FROM DB:", post.coverImage);
           </div>
         ))}
       </div>
