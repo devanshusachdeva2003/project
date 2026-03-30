@@ -63,18 +63,15 @@ export default function TrendingPosts() {
             )}
 
             {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
-            {post.coverImage && (
-              <img
-                src={
-                  post.coverImage.startsWith("http")
-                    ? post.coverImage.replace("https//", "https://")
-                    : `${VITE_API_BASE_URL}/${post.coverImage.replace(/^\/+/, "")}`
-                }
-                className="w-full h-60 object-cover rounded-lg mb-4"
-                alt="cover"
-              />
-            )}
-
+            <img
+  src={
+    post.coverImage?.trim().startsWith("http")
+      ? post.coverImage.trim().replace("https//", "https://")
+      : `${VITE_API_BASE_URL}/${post.coverImage?.trim().replace(/^\/+/, "")}`
+  }
+  className="w-full h-60 object-cover rounded-lg mb-4"
+  alt="cover"
+/>
             <h2 className="text-xl font-bold mb-2">{post.title}</h2>
 
             <p className="text-gray-300 mb-4">
