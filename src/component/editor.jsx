@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
+import { getImageUrl } from "../utlis/image";
 
 import {
   Pencil,
@@ -303,7 +304,7 @@ const fetchProfile = async () => {
     setTopic(post.topic || "");
     setContent(post.content);
     if (post.coverImage)
-      setCoverPreview(`${VITE_API_BASE_URL}${post.coverImage}`);
+      setCoverPreview(getImageUrl(post.coverImage));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -746,11 +747,7 @@ const fetchProfile = async () => {
 {post.coverImage && (
   <div className="relative w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
     <img
-      src={
-        post.coverImage.startsWith("http")
-          ? post.coverImage
-          : `${VITE_API_BASE_URL}${post.coverImage}`
-      }
+      src={getImageUrl(post.coverImage)}
       alt="cover"
     />
 

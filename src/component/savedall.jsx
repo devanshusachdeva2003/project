@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2, Bookmark } from "lucide-react";
 import { toast } from "react-toastify";
+import { getImageUrl } from "../utlis/image";
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
 export default function SavedPosts() {
   const [savedPosts, setSavedPosts] = useState([]);
@@ -82,7 +83,7 @@ export default function SavedPosts() {
               {post.topic && <p className="text-xs text-indigo-400 font-semibold mb-2">#{post.topic}</p>}
               {post.coverImage && (
                 <img
-                  src={`${VITE_API_BASE_URL}${post.coverImage}`}
+                  src={getImageUrl(post.coverImage)}
                   className="w-full h-60 object-cover rounded-lg mb-4"
                   alt="cover"
                 />

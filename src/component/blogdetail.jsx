@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import parse from "html-react-parser";
+import { getImageUrl } from "../utlis/image";
 
 export default function BlogDetails() {
   const { id } = useParams();
@@ -118,13 +119,7 @@ export default function BlogDetails() {
           {/* Cover */}
   {blog.coverImage && (
   <img
-    src={
-      blog.coverImage.includes("cloudinary")
-        ? blog.coverImage.replace("https//", "https://") // ✅ fix broken cloudinary
-        : blog.coverImage.startsWith("http")
-        ? blog.coverImage
-        : `${VITE_API_BASE_URL}${blog.coverImage}`
-    }
+    src={getImageUrl(blog.coverImage)}
     alt="blog cover"
     className="w-full h-64 md:h-96 object-cover rounded-xl mb-6"
   />

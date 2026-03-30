@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../utlis/image";
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Tabs,
@@ -54,7 +55,7 @@ export default function PublicBlogs() {
 
             {featured.coverImage && (
               <img
-                src={`${VITE_API_BASE_URL}${featured.coverImage}`}
+                src={getImageUrl(featured.coverImage)}
                 alt={featured.title}
                 className="w-full h-full object-cover md:h-[420px]"
               />
@@ -159,7 +160,7 @@ function BlogGrid({ posts }) {
 
           {post.coverImage && (
             <img
-              src={`${VITE_API_BASE_URL}${post.coverImage}`}
+              src={getImageUrl(post.coverImage)}
               alt={post.title}
               className="w-full h-52 object-cover"
             />
