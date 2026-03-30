@@ -63,29 +63,13 @@ export default function TrendingPosts() {
             )}
 
             {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
-            {post.coverImage && (
+           {post.coverImage && (
   <img
     src={
-      (() => {
-        let img = post.coverImage;
-
-        if (!img) return "";
-
-        img = img.trim();
-
-        // Fix broken cloudinary URL
-        if (img.includes("res.cloudinary.com")) {
-          return img.replace("https//", "https://");
-        }
-
-        // If already full URL
-        if (img.startsWith("http")) {
-          return img;
-        }
-
-        // Local image (VERY IMPORTANT FIX)
-        return `${VITE_API_BASE_URL}/${img.replace(/^\/+/, "")}`;
-      })()
+      post.coverImage
+        .trim()
+        .replace("https//", "https://")
+        .replace("https://projectbackend-1-yac2.onrender.com", "")
     }
     className="w-full h-60 object-cover rounded-lg mb-4"
     alt="cover"
