@@ -155,8 +155,7 @@ export default function EditProfile() {
 
           <nav className="space-y-4 flex-1 text-gray-300">
             <div className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 cursor-pointer">
-              <span className="text-xl">📝</span>
-              <span>Blogs</span>
+            
             </div>
 
             <div className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 cursor-pointer">

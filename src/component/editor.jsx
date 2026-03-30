@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { getImageUrl } from "../utlis/image";
+import NotificationPanel from "./notificationPanel";
 
 import {
   Pencil,
@@ -14,6 +15,7 @@ import {
   MessageCircle,
   Search,
   LogOut,
+  Bell,
 } from "lucide-react";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -107,6 +109,7 @@ const [isEditOpen, setIsEditOpen] = useState(false);
 const [editName, setEditName] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
 
   const [commentText, setCommentText] = useState("");
   const [selectedPostId, setSelectedPostId] = useState(null);
@@ -524,9 +527,9 @@ const fetchProfile = async () => {
 
         {/* MAIN FEED */}
         <main className="flex-1 ml-64 p-8 max-w-6xl">
-          {/* SEARCH BAR */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 bg-slate-800/50 backdrop-blur-lg border border-slate-700/50 rounded-xl overflow-hidden group hover:border-indigo-500/50 transition-all duration-300 focus-within:border-indigo-500 focus-within:shadow-lg focus-within:shadow-indigo-500/20">
+          {/* SEARCH BAR + NOTIFICATION */}
+          <div className="mb-10 flex items-center gap-4">
+            <div className="flex-1 flex items-center gap-3 bg-slate-800/50 backdrop-blur-lg border border-slate-700/50 rounded-xl overflow-hidden group hover:border-indigo-500/50 transition-all duration-300 focus-within:border-indigo-500 focus-within:shadow-lg focus-within:shadow-indigo-500/20">
               <Search className="w-5 h-5 text-indigo-400 ml-4" />
               <input
                 type="text"
@@ -542,6 +545,18 @@ const fetchProfile = async () => {
                 Search
               </button>
             </div>
+
+            {/* NOTIFICATION BUTTON */}
+            <button
+              onClick={() => setIsNotificationPanelOpen(true)}
+              className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-lg shadow-lg shadow-indigo-500/30 transition-all duration-300 transform hover:scale-110"
+              title="Notifications"
+            >
+              <Bell size={20} />
+              <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full">
+                🔔
+              </span>
+            </button>
           </div>
 
           {/* TOPIC TABS */}
@@ -784,6 +799,12 @@ const fetchProfile = async () => {
           )}
         </main>
       </div>
+
+      {/* NOTIFICATION PANEL */}
+      <NotificationPanel
+        isOpen={isNotificationPanelOpen}
+        onClose={() => setIsNotificationPanelOpen(false)}
+      />
 
       <ToastContainer theme="light" />
     </div>
