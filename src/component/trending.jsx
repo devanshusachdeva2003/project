@@ -63,13 +63,29 @@ export default function TrendingPosts() {
             )}
 
             {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
-          {post.coverImage && (
+      {post.coverImage && (
   <img
     src={
-      post.coverImage
-        .trim()
-        .replace("https//", "https://")
-        .replace(VITE_API_BASE_URL, "")
+      (() => {
+        let img = post.coverImage?.trim();
+        if (!img) return "";
+
+        // Fix broken https
+        img = img.replace("https//", "https://");
+
+        // ✅ If Cloudinary → use directly
+        if (img.includes("res.cloudinary.com")) {
+          return img;
+        }
+
+        // ✅ If already full backend URL → use directly
+        if (img.includes("onrender.com")) {
+          return img;
+        }
+
+        // ✅ Otherwise (relative path) → attach backend
+        return `${VITE_API_BASE_URL}/${img.replace(/^\/+/, "")}`;
+      })()
     }
     className="w-full h-60 object-cover rounded-lg mb-4"
     alt="cover"
