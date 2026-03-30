@@ -75,7 +75,7 @@ export default function TrendingPosts() {
               {/* ✅ CLEAN IMAGE HANDLING */}
               {post.coverImage && (
                 <img
-                  src={getImageUrl(post.coverImage, VITE_API_BASE_URL)}
+                  src={getImageUrl(post.coverImage)}
                   className="w-full h-60 object-cover rounded-lg mb-4"
                   alt="cover"
                 />
