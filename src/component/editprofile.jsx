@@ -159,8 +159,7 @@ export default function EditProfile() {
             </div>
 
             <div className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 cursor-pointer">
-              <span className="text-xl">🔔</span>
-              <span>Notifications</span>
+            
             </div>
 
             <hr className="border-slate-700/50 my-4" />
