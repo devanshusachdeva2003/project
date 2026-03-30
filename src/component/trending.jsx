@@ -10,24 +10,6 @@ export default function TrendingPosts() {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  // ✅ IMAGE FIX HELPER (IMPORTANT)
-  const getImageUrl = (url) => {
-    if (!url) return "";
-
-    // Fix broken Cloudinary URL
-    if (url.includes("res.cloudinary.com")) {
-      return url.replace("https//", "https://");
-    }
-
-    // Already full URL
-    if (url.startsWith("http")) {
-      return url;
-    }
-
-    // Local image
-    return `${VITE_API_BASE_URL}${url}`;
-  };
-
   useEffect(() => {
     const fetchTrending = async () => {
       try {
@@ -54,7 +36,7 @@ export default function TrendingPosts() {
     };
 
     fetchTrending();
-  }, [token]);
+  }, [token, VITE_API_BASE_URL]);
 
   if (isLoading)
     return <Loader2 className="animate-spin text-center mt-10 mx-auto" />;
@@ -80,10 +62,14 @@ export default function TrendingPosts() {
               </p>
             )}
 
-            {/* ✅ FIXED IMAGE */}
+            {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
             {post.coverImage && (
               <img
-                src={getImageUrl(post.coverImage)}
+                src={
+                  post.coverImage.startsWith("http")
+                    ? post.coverImage.replace("https//", "https://")
+                    : `${VITE_API_BASE_URL}/${post.coverImage.replace(/^\/+/, "")}`
+                }
                 className="w-full h-60 object-cover rounded-lg mb-4"
                 alt="cover"
               />
