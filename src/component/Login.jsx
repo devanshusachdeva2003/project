@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,6 +15,7 @@ export default function Log() {
     email: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setLoginData({
@@ -106,15 +108,24 @@ export default function Log() {
             className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20"
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-            value={loginData.password}
-            onChange={handleChange}
-            className="w-full mb-6 px-4 py-3 bg-slate-700/50 border border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20"
-          />
+          <div className="relative w-full mb-6">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              required
+              value={loginData.password}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-indigo-400 transition-colors"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
 
           <button
             type="submit"
