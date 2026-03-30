@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { getImageUrl } from "../utils/image"; // ✅ IMPORT UTILITY
+import { getImageUrl } from "../utlis/image"; // ✅ IMPORT UTILITY
 
 export default function TrendingPosts() {
   const [posts, setPosts] = useState([]);
