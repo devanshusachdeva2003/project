@@ -139,6 +139,33 @@ export default function AdminDashboard() {
     }
   };
 
+  // Create user (Admin)
+  const handleCreateUser = async (name, email, password, username, role) => {
+    try {
+      console.log("🚀 Creating user:", { name, email, username, role });
+      
+      const res = await fetch(`${VITE_API_BASE_URL}/api/users`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name, email, password, username, role }),
+      });
+
+      const data = await res.json();
+      console.log("📊 Response:", data);
+
+      if (!res.ok) throw new Error(data.message || "Create user failed");
+
+      alert("✅ User created successfully!");
+      fetchUsers();
+    } catch (error) {
+      console.error("❌ Create user error:", error);
+      alert(error.message || "Failed to create user");
+    }
+  };
+
   // Delete user
   const handleDeleteUser = async (id) => {
     try {
@@ -265,6 +292,7 @@ export default function AdminDashboard() {
             users={users}
             onDelete={handleDeleteUser}
             onRoleChange={handleRoleChange}
+            onCreate={handleCreateUser}
           />
         )}
 
