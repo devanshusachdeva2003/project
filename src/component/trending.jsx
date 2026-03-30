@@ -63,27 +63,30 @@ export default function TrendingPosts() {
             )}
 
             {/* ✅ INLINE IMAGE FIX (NO FUNCTION) */}
-      {post.coverImage && (
+    {post.coverImage && (
   <img
     src={
       (() => {
-        let img = post.coverImage?.trim();
-        if (!img) return "";
+        let img = post.coverImage || "";
 
-        // Fix broken https
+        // 🔥 Step 1: remove spaces
+        img = img.trim();
+
+        // 🔥 Step 2: fix broken https
         img = img.replace("https//", "https://");
 
-        // ✅ If Cloudinary → use directly
+        // 🔥 Step 3: REMOVE backend if mistakenly attached before cloudinary
         if (img.includes("res.cloudinary.com")) {
-          return img;
+          const index = img.indexOf("res.cloudinary.com");
+          return "https://" + img.substring(index);
         }
 
-        // ✅ If already full backend URL → use directly
+        // 🔥 Step 4: if already full backend URL → use directly
         if (img.includes("onrender.com")) {
           return img;
         }
 
-        // ✅ Otherwise (relative path) → attach backend
+        // 🔥 Step 5: otherwise attach backend
         return `${VITE_API_BASE_URL}/${img.replace(/^\/+/, "")}`;
       })()
     }
