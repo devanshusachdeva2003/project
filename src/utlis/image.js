@@ -16,6 +16,9 @@ export const getImageUrl = (img, baseUrl) => {
     return url;
   }
 
+  // If no baseUrl provided, use from environment
+  const finalBaseUrl = baseUrl || import.meta.env.VITE_API_BASE_URL;
+
   // Otherwise → attach backend
-  return `${baseUrl}/${url.replace(/^\/+/, "")}`;
+  return `${finalBaseUrl}/${url.replace(/^\/+/, "")}`;
 };
