@@ -14,6 +14,15 @@ export default function PublicBlogs() {
   const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
 
+  // ✅ REDIRECT IF LOGGED IN
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/blog");
+      return;
+    }
+  }, [navigate]);
+
  useEffect(() => {
     // Fetching the posts from the API
     fetch(`${VITE_API_BASE_URL}/api/blog`)
