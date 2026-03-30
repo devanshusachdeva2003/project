@@ -234,6 +234,13 @@ const fetchProfile = async () => {
   // ---------------- CREATE / EDIT ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!token) {
+      toast.error("You must be logged in to publish a blog");
+      navigate("/login");
+      return;
+    }
+
     if (!title || !content) {
       toast.error("Title and content required");
       return;
@@ -252,15 +259,27 @@ const fetchProfile = async () => {
     if (coverImage) formData.append("coverImage", coverImage);
 
     try {
+      console.log("🚀 Submitting blog to:", url);
+      console.log("📝 Method:", method);
+      console.log("🔐 Token:", token ? "✅ Present" : "❌ Missing");
+      console.log("📸 Cover Image:", coverImage ? "✅ Yes" : "❌ No");
+
       const res = await fetch(url, {
         method,
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
-      if (!res.ok) throw new Error();
+      console.log("📊 Response Status:", res.status);
+      
+      const responseData = await res.json();
+      console.log("✉️ API Response:", responseData);
 
-      toast.success(editingId ? "Post Updated" : "Post Published");
+      if (!res.ok) {
+        throw new Error(responseData.message || `HTTP ${res.status}: ${res.statusText}`);
+      }
+
+      toast.success(editingId ? "✅ Post Updated" : "✅ Post Published");
 
       setTitle("");
       setContent("");
@@ -272,9 +291,12 @@ const fetchProfile = async () => {
       if (quillRef.current) {
         quillRef.current.setContents([], "silent");
       }
+      
+      console.log("🔄 Refreshing posts...");
       fetchPosts();
-    } catch {
-      toast.error("Save failed");
+    } catch (error) {
+      console.error("❌ Blog save error:", error);
+      toast.error(error.message || "Save failed");
     }
   };
 
