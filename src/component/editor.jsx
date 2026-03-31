@@ -703,9 +703,9 @@ const fetchProfile = async () => {
                   onClick={() => navigate(`/blog/${post._id}`)}
                   className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                  <div className="flex justify-between gap-6 overflow-hidden">
+                 <div className="flex justify-between gap-6 items-start">
                     {/* LEFT: Text */}
-                    <div className="flex-1 min-w-0 overflow-hidden">
+                    <div className="flex-1 min-w-0">
                       <p className="text-xs text-gray-400 mb-2">
                         👤 {post.author || "Anonymous"} · 📅{" "}
                         {new Date(post.createdAt).toLocaleDateString()}
@@ -713,11 +713,12 @@ const fetchProfile = async () => {
                       <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3 break-words">
                         {post.title}
                       </h2>
-                      <p className="text-gray-400 mb-4 line-clamp-2 break-words overflow-hidden">
-                        {post?.content
-                          ? decodeHtmlEntities(String(post.content)).replace(/<[^>]*>?/gm, "").slice(0, 150) + "..."
-                          : "No content"}
-                      </p>
+                      <p
+  className="text-gray-400 mb-4 text-sm line-clamp-3 overflow-hidden break-words"
+  dangerouslySetInnerHTML={{
+    __html: post.content || "",
+  }}
+/>
                       <div className="flex items-center gap-3 mb-4">
                         {post.topic && (
                           <span className="px-3 py-1 bg-indigo-600/30 border border-indigo-500/50 text-indigo-300 rounded-full text-xs font-semibold">
@@ -834,6 +835,7 @@ const fetchProfile = async () => {
     <img
       src={getImageUrl(post.coverImage)}
       alt="cover"
+      className="w-full h-full object-cover"
     />
 
     {/* Gradient overlay */}
