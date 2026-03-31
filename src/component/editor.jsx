@@ -292,7 +292,8 @@ const fetchProfile = async () => {
       setEditingId(null);
 
       if (quillRef.current) {
-        quillRef.current.setContents([], "silent");
+        const editor = quillRef.current.getEditor();
+        editor.setContents([], "silent");
       }
       
       console.log("🔄 Refreshing posts...");
