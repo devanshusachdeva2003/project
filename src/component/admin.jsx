@@ -230,6 +230,13 @@ export default function AdminDashboard() {
         <nav className="flex flex-col space-y-3 flex-1">
 
           <button
+            onClick={() => navigate("/")}
+            className="text-left px-4 py-3 rounded-lg font-medium transition-all duration-300 transform text-gray-300 hover:text-white hover:bg-slate-700/50 hover:translate-x-2"
+          >
+            🏠 Public Blogs
+          </button>
+
+          <button
             className={`text-left px-4 py-3 rounded-lg font-medium transition-all duration-300 transform ${
               activeTab === "posts"
                 ? "bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-lg shadow-indigo-500/30"

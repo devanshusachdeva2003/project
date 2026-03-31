@@ -443,6 +443,14 @@ const fetchProfile = async () => {
 
           <nav className="space-y-6 flex-1 text-gray-300">
             <button
+              onClick={() => navigate("/")}
+              className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 transform hover:translate-x-2"
+            >
+              <span className="text-xl">🏠</span>
+              <span>Public Blogs</span>
+            </button>
+
+            <button
               onClick={() => navigate("/trending")}
               className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 transform hover:translate-x-2"
             >
