@@ -119,6 +119,8 @@ const [editName, setEditName] = useState("");
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+  const user = localStorage.getItem("user");
+  const currentUserId = user ? JSON.parse(user)._id : null;
   const quillRef = useRef(null);
   
   // 🔥 CRITICAL: Get userId - Multiple fallback sources
@@ -134,6 +136,36 @@ const [editName, setEditName] = useState("");
     } catch (e) {
     }
   }
+
+  // Verify current user's role on component mount and every 5 seconds
+  useEffect(() => {
+    if (!token) return;
+
+    const verifyRole = async () => {
+      try {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        
+        // If role has changed, force logout
+        if (data.role !== role) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("user");
+          localStorage.removeItem("userId");
+          alert("Your role or permissions have changed. Please log in again.");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Failed to verify role", err);
+      }
+    };
+
+    verifyRole();
+    const interval = setInterval(verifyRole, 5000);
+    return () => clearInterval(interval);
+  }, [token, role, navigate, VITE_API_BASE_URL]);
 
 
 

@@ -14,17 +14,49 @@ export default function AdminDashboard() {
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+  const user = localStorage.getItem("user");
+  const currentUserId = user ? JSON.parse(user)._id : null;
 
   const navigate = useNavigate();
 
-  // Redirect non-admin users
+  // Verify current user's role on component mount and every 5 seconds
   useEffect(() => {
     if (!token) {
       navigate("/login");
-    } else if (role !== "admin") {
-      navigate("/blog");
+      return;
     }
-  }, [token, role, navigate]);
+    
+    if (role !== "admin") {
+      navigate("/blog");
+      return;
+    }
+
+    // Verify role with backend
+    const verifyRole = async () => {
+      try {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        
+        // If user's role is no longer admin, force logout
+        if (data.role !== "admin") {
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("user");
+          localStorage.removeItem("userId");
+          alert("Your role has been changed. Please log in again.");
+          navigate("/login");
+        }
+      } catch (err) {
+        console.error("Failed to verify role", err);
+      }
+    };
+
+    verifyRole();
+    const interval = setInterval(verifyRole, 5000);
+    return () => clearInterval(interval);
+  }, [token, role, navigate, VITE_API_BASE_URL]);
 
   // Fetch blog posts
   const fetchPosts = async () => {
@@ -198,7 +230,17 @@ export default function AdminDashboard() {
 
       if (!res.ok) throw new Error("Role change failed");
 
-      fetchUsers();
+      // If the current user's role is being changed, force logout
+      if (id === currentUserId) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("user");
+        localStorage.removeItem("userId");
+        alert("Your role has been changed. Please log in again.");
+        navigate("/login");
+      } else {
+        fetchUsers();
+      }
     } catch {
       alert("Failed to change role");
     }
