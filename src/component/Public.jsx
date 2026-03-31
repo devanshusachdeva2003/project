@@ -14,14 +14,9 @@ export default function PublicBlogs() {
   const [posts, setPosts] = useState([]);
     const navigate = useNavigate();
 
-  // ✅ REDIRECT IF LOGGED IN
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/blog");
-      return;
-    }
-  }, [navigate]);
+  const token = localStorage.getItem("token");
+  const user = localStorage.getItem("user");
+  const userName = user ? JSON.parse(user).name : "User";
 
  useEffect(() => {
     // Fetching the posts from the API
@@ -30,11 +25,16 @@ export default function PublicBlogs() {
       .then((data) => setPosts(data));
 
     const timer = setTimeout(() => {
-      navigate("/register")
+      if (!token) navigate("/register")
     }, 40000);
 
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, token]);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   const topics = ["all", "Technology", "React", "AI", "Programming"];
   const featured = posts[0];
@@ -45,7 +45,59 @@ export default function PublicBlogs() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.15),_transparent_40%)]" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_40%)]" />
 
-      <div className="max-w-7xl mx-auto px-6">
+      {/* HEADER */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-slate-900/95 to-slate-900/80 backdrop-blur-lg border-b border-slate-700/50 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">
+            📖 Blog Platform
+          </h1>
+
+          <div className="flex gap-4 items-center">
+            {token ? (
+              <>
+                <span className="text-gray-300 font-semibold">
+                  Welcome, <span className="text-indigo-400">{userName}</span>
+                </span>
+                <button
+                  onClick={() => navigate("/blog")}
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  📝 My Blog
+                </button>
+                <button
+                  onClick={() => navigate("/edit-profile")}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  👤 Profile
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  🚪 Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="text-indigo-400 font-semibold hover:text-indigo-300 transition"
+                >
+                  Log in
+                </Link>
+                <Link
+                  to="/register"
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 pt-20">
 
         {/* PAGE TITLE */}
         <div className="text-center mb-16">
@@ -159,7 +211,7 @@ function BlogGrid({ posts }) {
   }
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <div className="">
 
       {posts.map((post) => (
         <div
