@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Nav = () => {
   return (
-    <nav className="bg-slate-950 border-b border-white/10 backdrop-blur">
+    <nav className="bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         
         <Link to="/">
