@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../utlis/image";
+import parse from "html-react-parser";
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Tabs,
@@ -133,7 +134,11 @@ export default function PublicBlogs() {
               </h2>
 
               <p className="text-gray-400 mb-6 leading-relaxed">
-  {featured?.content?.replace(/<[^>]*>?/gm, "").slice(0, 180) || "..."}
+  {(() => {
+    const text = parse(featured?.content || "");
+    const plainText = typeof text === 'string' ? text : React.Children.toArray(text).join(' ');
+    return String(plainText).slice(0, 180) || "...";
+  })()}
 </p>
               <Link
                 to={`/blog/${featured._id}`}
@@ -216,10 +221,10 @@ function BlogGrid({ posts }) {
       {posts.map((post) => (
         <div
           key={post._id}
-          className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 overflow-hidden border border-slate-700/50 hover:border-indigo-500/50"
+          className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 overflow-hidden border border-slate-700/50 hover:border-indigo-500/50 flex flex-col h-full"
         >
 
-          {post.coverImage && (
+          {post.coverImage && ( rounded-t-2xl
             <img
               src={getImageUrl(post.coverImage)}
               alt={post.title}
@@ -227,20 +232,24 @@ function BlogGrid({ posts }) {
             />
           )}
 
-          <div className="p-6">
+          <div className="p-6 flex flex-col flex-1">
 
             <span className="text-xs text-indigo-300 font-semibold uppercase tracking-wide">
               {post.topic}
             </span>
 
-            <h2 className="font-bold text-xl mt-2 mb-3 line-clamp-2 text-white">
+            <h2 className="font-bold text-xl mt-2 mb-3 line-clamp-2 text-white leading-tight">
               {post.title}
             </h2>
 
            <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
-  {post?.content?.replace(/<[^>]*>?/gm, "").slice(0, 140) || "..."}
+  {(() => {
+    const text = parse(post?.content || "");
+    const plainText = typeof text === 'string' ? text : React.Children.toArray(text).join(' ');
+    return String(plainText).slice(0, 140) || "...";
+  })()}
 </p>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center mt-auto">
 
               <span className="text-xs text-gray-500">
                 By {post.author}
