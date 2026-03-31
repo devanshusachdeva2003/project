@@ -703,22 +703,21 @@ const fetchProfile = async () => {
                   onClick={() => navigate(`/blog/${post._id}`)}
                   className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                 <div className="flex justify-between gap-6 items-start">
+                 <div className="w-full">
                     {/* LEFT: Text */}
-                    <div className="flex-1 min-w-0">
+                    <div className="w-full">
                       <p className="text-xs text-gray-400 mb-2">
                         👤 {post.author || "Anonymous"} · 📅{" "}
                         {new Date(post.createdAt).toLocaleDateString()}
                       </p>
-                      <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3 break-words">
+                      <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3">
                         {post.title}
                       </h2>
-                      <p
-  className="text-gray-400 mb-4 text-sm line-clamp-3 overflow-hidden break-words"
-  dangerouslySetInnerHTML={{
-    __html: post.content || "",
-  }}
-/>
+                      <p className="text-gray-400 mb-4 text-sm line-clamp-3 break-words overflow-hidden w-full max-w-full">
+                        {post?.content
+                          ? decodeHtmlEntities(String(post.content)).replace(/<[^>]*>?/gm, "").slice(0, 150) + "..."
+                          : "No content"}
+                      </p>
                       <div className="flex items-center gap-3 mb-4">
                         {post.topic && (
                           <span className="px-3 py-1 bg-indigo-600/30 border border-indigo-500/50 text-indigo-300 rounded-full text-xs font-semibold">
@@ -829,19 +828,6 @@ const fetchProfile = async () => {
                       )}
                     </div>
 
-                   {/* RIGHT: Image */}
-{post.coverImage && (
-  <div className="relative w-48 h-32 flex-shrink-0 overflow-hidden rounded-xl">
-    <img
-      src={getImageUrl(post.coverImage)}
-      alt="cover"
-      className="w-full h-full object-cover"
-    />
-
-    {/* Gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-  </div>
-)}
                   </div>
                 </div>
               ))}

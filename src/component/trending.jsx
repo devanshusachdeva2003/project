@@ -84,8 +84,12 @@ export default function TrendingPosts() {
             </h2>
 
             {/* Content (FIXED) */}
-            <p
-              className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words"
+            <div
+              className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full"
+              style={{
+                wordBreak: "break-word",
+                overflowWrap: "break-word",
+              }}
               dangerouslySetInnerHTML={{
                 __html: post.content || "",
               }}
