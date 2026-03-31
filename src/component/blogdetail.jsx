@@ -163,6 +163,11 @@ export default function BlogDetails() {
               [overflow-wrap:anywhere]
               prose-pre:overflow-x-auto
               prose-img:max-w-full
+              [&_p]:break-words
+              [&_h1]:break-words
+              [&_h2]:break-words
+              [&_h3]:break-words
+              overflow-hidden
             "
           >
             {cleanContent}

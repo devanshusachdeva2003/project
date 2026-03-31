@@ -701,19 +701,19 @@ const fetchProfile = async () => {
                 <div
                   key={post._id}
                   onClick={() => navigate(`/blog/${post._id}`)}
-                  className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer transform hover:scale-105 hover:-translate-y-1"
+                  className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
-                  <div className="flex justify-between gap-6">
+                  <div className="flex justify-between gap-6 overflow-hidden">
                     {/* LEFT: Text */}
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0 overflow-hidden">
                       <p className="text-xs text-gray-400 mb-2">
                         👤 {post.author || "Anonymous"} · 📅{" "}
                         {new Date(post.createdAt).toLocaleDateString()}
                       </p>
-                      <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3">
+                      <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3 break-words">
                         {post.title}
                       </h2>
-                      <p className="text-gray-400 mb-4 line-clamp-2">
+                      <p className="text-gray-400 mb-4 line-clamp-2 break-words overflow-hidden">
                         {post?.content
                           ? decodeHtmlEntities(String(post.content)).replace(/<[^>]*>?/gm, "").slice(0, 150) + "..."
                           : "No content"}

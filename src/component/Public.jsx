@@ -140,7 +140,7 @@ export default function PublicBlogs() {
                 {featured.title}
               </h2>
 
-              <p className="text-gray-400 mb-6 leading-relaxed">
+              <p className="text-gray-400 mb-6 leading-relaxed break-words overflow-hidden">
   {(() => {
     const plainText = decodeHtmlEntities(featured?.content || "").replace(/<[^>]*>/g, "");
     return plainText.slice(0, 180) || "...";
@@ -244,11 +244,11 @@ function BlogGrid({ posts }) {
               {post.topic}
             </span>
 
-            <h2 className="font-bold text-xl mt-2 mb-3 line-clamp-2 text-white leading-tight">
+            <h2 className="font-bold text-xl mt-2 mb-3 line-clamp-2 text-white leading-tight break-words">
               {post.title}
             </h2>
 
-           <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
+           <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed break-words overflow-hidden">
   {(() => {
     const plainText = decodeHtmlEntities(post?.content || "").replace(/<[^>]*>/g, "");
     return plainText.slice(0, 140) || "...";
