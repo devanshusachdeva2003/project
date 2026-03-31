@@ -10,6 +10,7 @@ import BlogDetails from "./component/blogdetail";
 import SavedPosts from "./component/savedall";
 import TrendingPosts from "./component/trending";
 import EditProfile from "./component/editprofile";
+import UserProfile from "./component/userprofile";
 
 import "./index.css";
 
@@ -41,7 +42,8 @@ function App() {
         <Route path="/login" element={<Log />} />
         <Route path="/register" element={<Register />} />
         <Route path="/blog/:id" element={<BlogDetails />} />
-          <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/profile/:userId" element={<UserProfile />} />
 
         {/* SAVED POSTS PAGE */}
         <Route path="/trending" element={<TrendingPosts />} />

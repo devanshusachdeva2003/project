@@ -127,8 +127,12 @@ export default function SavedPosts() {
               </h2>
 
               {/* ✅ FIXED CONTENT */}
-              <p
-                className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words"
+              <div
+                className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full [&*]:text-gray-300"
+                style={{
+                  wordBreak: "break-word",
+                  overflowWrap: "break-word",
+                }}
                 dangerouslySetInnerHTML={{
                   __html: post.content || "",
                 }}

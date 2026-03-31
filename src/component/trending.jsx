@@ -79,13 +79,13 @@ export default function TrendingPosts() {
             )}
 
             {/* Title */}
-            <h2 className="text-xl font-bold mb-2 break-words">
+            <h2 className="text-xl font-bold mb-2 break-words text-white">
               {post.title}
             </h2>
 
             {/* Content (FIXED) */}
             <div
-              className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full"
+              className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full [&*]:text-gray-300"
               style={{
                 wordBreak: "break-word",
                 overflowWrap: "break-word",

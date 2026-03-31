@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, UserPlus, UserMinus, Loader2 } from "lucide-react";
 import parse from "html-react-parser";
 import { getImageUrl } from "../utlis/image";
+import { followUser, unfollowUser } from "../utlis/followService";
+import { toast } from "react-toastify";
 
 // Function to decode HTML entities
 const decodeHtmlEntities = (html) => {
@@ -18,9 +20,13 @@ export default function BlogDetails() {
 
   const [blog, setBlog] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isLoadingFollow, setIsLoadingFollow] = useState(false);
+  const [authorId, setAuthorId] = useState(null);
 
   const token = localStorage.getItem("token");
   const role = localStorage.getItem("role");
+  const currentUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
   // FETCH BLOG
   const fetchBlog = async () => {
@@ -30,12 +36,51 @@ export default function BlogDetails() {
       });
       const data = await res.json();
       setBlog(data);
+      
+      // Set author ID for follow functionality
+      if (data.authorId) {
+        setAuthorId(data.authorId);
+        // Check if current user is following the author
+        if (currentUser && data.followers && Array.isArray(data.followers)) {
+          setIsFollowing(data.followers.includes(currentUser._id));
+        }
+      }
     } catch {}
   };
 
   useEffect(() => {
     fetchBlog();
   }, [id]);
+
+  // HANDLE FOLLOW
+  const handleFollow = async () => {
+    if (!token) {
+      toast.error("Please login to follow users");
+      return;
+    }
+
+    if (!authorId) {
+      toast.error("Author information not available");
+      return;
+    }
+
+    setIsLoadingFollow(true);
+    try {
+      if (isFollowing) {
+        await unfollowUser(authorId, token);
+        setIsFollowing(false);
+        toast.success("Unfollowed successfully");
+      } else {
+        await followUser(authorId, token);
+        setIsFollowing(true);
+        toast.success("Followed successfully");
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update follow status");
+    } finally {
+      setIsLoadingFollow(false);
+    }
+  };
 
   // ADD COMMENT
   const addComment = async () => {
@@ -100,7 +145,6 @@ export default function BlogDetails() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
-      
       {/* Background blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-20"></div>
@@ -122,15 +166,15 @@ export default function BlogDetails() {
 
         {/* Main Content Card */}
         <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl p-8 mb-8">
-          
           {/* Cover */}
-  {blog.coverImage && (
-  <img
-    src={getImageUrl(blog.coverImage)}
-    alt="blog cover"
-    className="w-full h-64 md:h-96 object-cover rounded-xl mb-6"
-  />
-)}
+          {blog.coverImage && (
+            <img
+              src={getImageUrl(blog.coverImage)}
+              alt="blog cover"
+              className="w-full h-64 md:h-96 object-cover rounded-xl mb-6"
+            />
+          )}
+
           {/* Topic */}
           {blog.topic && (
             <p className="text-sm text-indigo-400 mb-3">
@@ -143,15 +187,44 @@ export default function BlogDetails() {
             {blog.title}
           </h1>
 
-          {/* Author */}
-          <div className="flex gap-4 text-gray-400 mb-8 border-b pb-6">
-            <span>
-              By <span className="text-white">{blog.author}</span>
-            </span>
-            <span>·</span>
-            <span>
-              {new Date(blog.createdAt).toLocaleDateString()}
-            </span>
+          {/* Author with Follow Button */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8 border-b pb-6">
+            <div className="flex gap-4 text-gray-400">
+              <span>
+                By <span className="text-white">{blog.author}</span>
+              </span>
+              <span>·</span>
+              <span>
+                {new Date(blog.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+
+            {/* Follow Button - Only show if not viewing own blog */}
+            {currentUser && authorId && currentUser._id !== authorId && (
+              <button
+                onClick={handleFollow}
+                disabled={isLoadingFollow}
+                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                  isFollowing
+                    ? "bg-slate-700 hover:bg-slate-600 text-white border border-slate-600"
+                    : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg shadow-indigo-500/30"
+                } disabled:opacity-50 disabled:cursor-not-allowed`}
+              >
+                {isLoadingFollow ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : isFollowing ? (
+                  <>
+                    <UserMinus size={18} />
+                    Unfollow
+                  </>
+                ) : (
+                  <>
+                    <UserPlus size={18} />
+                    Follow
+                  </>
+                )}
+              </button>
+            )}
           </div>
 
           {/* ✅ Blog Content (FIXED) */}
@@ -178,7 +251,6 @@ export default function BlogDetails() {
         {/* ================= COMMENTS ================= */}
         {role === "admin" && (
           <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl p-8">
-            
             <h2 className="text-2xl font-bold text-white mb-6">
               Comments
             </h2>
