@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 import { getImageUrl } from "../utlis/image";
 import parse from "html-react-parser";
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+// Function to decode HTML entities
+const decodeHtmlEntities = (html) => {
+  const textArea = document.createElement("textarea");
+  textArea.innerHTML = html;
+  return textArea.value;
+};
 import {
   Tabs,
   TabsList,
@@ -135,9 +142,8 @@ export default function PublicBlogs() {
 
               <p className="text-gray-400 mb-6 leading-relaxed">
   {(() => {
-    const text = parse(featured?.content || "");
-    const plainText = typeof text === 'string' ? text : React.Children.toArray(text).join(' ');
-    return String(plainText).slice(0, 180) || "...";
+    const plainText = decodeHtmlEntities(featured?.content || "").replace(/<[^>]*>/g, "");
+    return plainText.slice(0, 180) || "...";
   })()}
 </p>
               <Link
@@ -245,9 +251,8 @@ function BlogGrid({ posts }) {
            <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
   {(() => {
     const text = parse(post?.content || "");
-    const plainText = typeof text === 'string' ? text : React.Children.toArray(text).join(' ');
-    return String(plainText).slice(0, 140) || "...";
-  })()}
+    const plainText = decodeHtmlEntities(post?.content || "").replace(/<[^>]*>/g, "");
+    return plainText
 </p>
             <div className="flex justify-between items-center mt-auto">
 

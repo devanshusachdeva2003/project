@@ -5,6 +5,13 @@ import "react-quill-new/dist/quill.snow.css";
 import { getImageUrl } from "../utlis/image";
 import NotificationPanel from "./notificationPanel";
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (html) => {
+  const textArea = document.createElement("textarea");
+  textArea.innerHTML = html;
+  return textArea.value;
+};
+
 import {
   Pencil,
   Trash2,
@@ -708,7 +715,7 @@ const fetchProfile = async () => {
                       </h2>
                       <p className="text-gray-400 mb-4 line-clamp-2">
                         {post?.content
-                          ? String(post.content).replace(/<[^>]*>?/gm, "").slice(0, 150) + "..."
+                          ? decodeHtmlEntities(String(post.content)).replace(/<[^>]*>?/gm, "").slice(0, 150) + "..."
                           : "No content"}
                       </p>
                       <div className="flex items-center gap-3 mb-4">

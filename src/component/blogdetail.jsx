@@ -4,6 +4,13 @@ import { ArrowLeft, Trash2 } from "lucide-react";
 import parse from "html-react-parser";
 import { getImageUrl } from "../utlis/image";
 
+// Function to decode HTML entities
+const decodeHtmlEntities = (html) => {
+  const textArea = document.createElement("textarea");
+  textArea.innerHTML = html;
+  return textArea.value;
+};
+
 export default function BlogDetails() {
   const { id } = useParams();
   const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -71,10 +78,10 @@ export default function BlogDetails() {
     } catch {}
   };
 
-  // 🔥 CLEAN HTML CONTENT (REMOVE INLINE COLORS)
+  // 🔥 CLEAN HTML CONTENT (REMOVE INLINE COLORS & DECODE ENTITIES)
   const cleanContent =
     blog &&
-    parse(blog.content, {
+    parse(decodeHtmlEntities(blog.content), {
       replace: (domNode) => {
         if (domNode.attribs) {
           delete domNode.attribs.style;
