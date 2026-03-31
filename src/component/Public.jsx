@@ -250,9 +250,9 @@ function BlogGrid({ posts }) {
 
            <p className="text-gray-400 text-sm mb-6 line-clamp-3 leading-relaxed">
   {(() => {
-    const text = parse(post?.content || "");
     const plainText = decodeHtmlEntities(post?.content || "").replace(/<[^>]*>/g, "");
-    return plainText
+    return plainText.slice(0, 140) || "...";
+  })()}
 </p>
             <div className="flex justify-between items-center mt-auto">
 
