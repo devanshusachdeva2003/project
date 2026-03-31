@@ -224,11 +224,11 @@ function BlogGrid({ posts }) {
           className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition duration-300 overflow-hidden border border-slate-700/50 hover:border-indigo-500/50 flex flex-col h-full"
         >
 
-          {post.coverImage && ( rounded-t-2xl
+          {post.coverImage && (
             <img
               src={getImageUrl(post.coverImage)}
               alt={post.title}
-              className="w-full h-52 object-cover"
+              className="w-full h-52 object-cover rounded-t-2xl"
             />
           )}
 
