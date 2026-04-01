@@ -154,18 +154,30 @@ export default function ManageUsers({ users, onRoleChange, onDelete, onCreate })
                 <TableHead className="text-indigo-300">Name</TableHead>
                 <TableHead className="text-indigo-300">Email</TableHead>
                 <TableHead className="text-indigo-300">Role</TableHead>
+                <TableHead className="text-center text-indigo-300">Followers</TableHead>
+                <TableHead className="text-center text-indigo-300">Following</TableHead>
                 <TableHead className="text-center text-indigo-300">Action</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
               {users && users.length > 0 ? (
-                users.map(({ _id, name, email, role }, index) => (
+                users.map(({ _id, name, email, role, followers, following }, index) => (
                   <TableRow key={_id} className="border-t border-slate-700/30 hover:bg-slate-700/20 transition-colors duration-200">
                     <TableCell className="text-gray-300">{index + 1}</TableCell>
                     <TableCell className="text-gray-300">{name}</TableCell>
                     <TableCell className="text-gray-300">{email}</TableCell>
                     <TableCell className="text-gray-300">{role}</TableCell>
+                    <TableCell className="text-center">
+                      <span className="inline-block bg-indigo-600/30 text-indigo-300 px-3 py-1 rounded-full text-sm font-semibold border border-indigo-500/50">
+                        {followers?.length || 0}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <span className="inline-block bg-blue-600/30 text-blue-300 px-3 py-1 rounded-full text-sm font-semibold border border-blue-500/50">
+                        {following?.length || 0}
+                      </span>
+                    </TableCell>
                     <TableCell className="flex justify-center gap-4">
                       <button
                         onClick={() =>
@@ -186,7 +198,7 @@ export default function ManageUsers({ users, onRoleChange, onDelete, onCreate })
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                  <TableCell colSpan={7} className="text-center py-8 text-gray-500">
                     No users found.
                   </TableCell>
                 </TableRow>

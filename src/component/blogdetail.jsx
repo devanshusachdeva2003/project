@@ -137,66 +137,68 @@ export default function BlogDetails() {
 
   if (!blog) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
-        <div className="text-lg text-gray-400">Loading blog...</div>
+      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900">
+        <div className="text-lg text-gray-600 font-semibold">Loading blog...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900">
       {/* Background blobs */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full blur-3xl opacity-20"></div>
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-purple-600 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400 rounded-full blur-3xl opacity-5"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-400 rounded-full blur-3xl opacity-5"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-indigo-400 rounded-full blur-3xl opacity-5"></div>
       </div>
 
       {/* Main container */}
-      <div className="relative z-10 max-w-4xl mx-auto p-8">
+      <div className="relative z-10 max-w-4xl mx-auto p-6 md:p-10">
         
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}
-          className="mb-8 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-semibold"
+          className="mb-10 flex items-center gap-2 text-blue-600 hover:text-blue-700 font-bold text-lg transition-colors duration-300"
         >
-          <ArrowLeft size={20} />
+          <ArrowLeft size={24} />
           Back
         </button>
 
         {/* Main Content Card */}
-        <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl p-8 mb-8">
+        <div className="bg-white backdrop-blur-lg border-2 border-blue-200 shadow-2xl rounded-2xl p-10 mb-10">
           {/* Cover */}
           {blog.coverImage && (
             <img
               src={getImageUrl(blog.coverImage)}
               alt="blog cover"
-              className="w-full h-64 md:h-96 object-cover rounded-xl mb-6"
+              className="w-full h-64 md:h-96 object-cover rounded-xl mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
             />
           )}
 
           {/* Topic */}
           {blog.topic && (
-            <p className="text-sm text-indigo-400 mb-3">
+            <div className="inline-block bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 px-4 py-2 rounded-full text-sm font-bold border border-blue-300 mb-6">
               #{blog.topic}
-            </p>
+            </div>
           )}
 
           {/* Title */}
-          <h1 className="text-5xl font-bold text-white mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
             {blog.title}
           </h1>
 
           {/* Author with Follow Button */}
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8 border-b pb-6">
-            <div className="flex gap-4 text-gray-400">
-              <span>
-                By <span className="text-white">{blog.author}</span>
-              </span>
-              <span>·</span>
-              <span>
-                {new Date(blog.createdAt).toLocaleDateString()}
-              </span>
+          <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between mb-10 pb-8 border-b-2 border-blue-200">
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-4 text-gray-700 font-semibold">
+                <span>
+                  By <span className="text-blue-600 font-bold text-lg">{blog.author}</span>
+                </span>
+                <span className="text-gray-400">·</span>
+                <span className="text-gray-600">
+                  {new Date(blog.createdAt).toLocaleDateString()}
+                </span>
+              </div>
             </div>
 
             {/* Follow Button - Only show if not viewing own blog */}
@@ -204,22 +206,22 @@ export default function BlogDetails() {
               <button
                 onClick={handleFollow}
                 disabled={isLoadingFollow}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 border-2 text-lg ${
                   isFollowing
-                    ? "bg-slate-700 hover:bg-slate-600 text-white border border-slate-600"
-                    : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white shadow-lg shadow-indigo-500/30"
+                    ? "bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white shadow-lg shadow-red-500/40 border-red-600"
+                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/40 border-blue-700"
                 } disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 {isLoadingFollow ? (
-                  <Loader2 size={18} className="animate-spin" />
+                  <Loader2 size={20} className="animate-spin" />
                 ) : isFollowing ? (
                   <>
-                    <UserMinus size={18} />
+                    <UserMinus size={20} />
                     Unfollow
                   </>
                 ) : (
                   <>
-                    <UserPlus size={18} />
+                    <UserPlus size={20} />
                     Follow
                   </>
                 )}
@@ -231,7 +233,7 @@ export default function BlogDetails() {
           <div
             className="
               prose max-w-none mb-12
-              [&_*]:!text-white
+              [&_*]:!text-gray-900
               break-words
               [overflow-wrap:anywhere]
               prose-pre:overflow-x-auto
@@ -240,7 +242,18 @@ export default function BlogDetails() {
               [&_h1]:break-words
               [&_h2]:break-words
               [&_h3]:break-words
+              [&_a]:text-blue-600
+              [&_a]:hover:text-blue-700
+              [&_a]:font-semibold
+              [&_code]:bg-blue-100
+              [&_code]:text-blue-700
+              [&_code]:px-2
+              [&_code]:py-1
+              [&_code]:rounded
               overflow-hidden
+              text-lg
+              leading-relaxed
+              text-gray-800
             "
           >
             {cleanContent}
@@ -250,26 +263,28 @@ export default function BlogDetails() {
 
         {/* ================= COMMENTS ================= */}
         {role === "admin" && (
-          <div className="bg-slate-800/50 backdrop-blur-lg border border-slate-700 rounded-2xl p-8">
-            <h2 className="text-2xl font-bold text-white mb-6">
-              Comments
+          <div className="bg-white backdrop-blur-lg border-2 border-blue-200 shadow-2xl rounded-2xl p-10">
+            <h2 className="text-3xl font-bold text-gray-900 mb-8 pb-6 border-b-2 border-blue-200">
+              Comments Section
             </h2>
 
             {/* Add comment */}
-            <div className="flex gap-3 mb-8">
-              <input
-                type="text"
-                placeholder="Write a comment..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                className="flex-1 bg-slate-700 border p-3 rounded-lg text-white"
-              />
-              <button
-                onClick={addComment}
-                className="bg-indigo-600 px-6 py-3 rounded-lg text-white"
-              >
-                Post
-              </button>
+            <div className="mb-10 bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-200">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Write a thoughtful comment..."
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                  className="flex-1 bg-white border-2 border-blue-200 focus:border-blue-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-blue-200/50 font-medium"
+                />
+                <button
+                  onClick={addComment}
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 px-8 py-4 rounded-lg text-white font-bold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/40 border-2 border-blue-700"
+                >
+                  Post
+                </button>
+              </div>
             </div>
 
             {/* Comments list */}
@@ -278,23 +293,28 @@ export default function BlogDetails() {
                 {blog.comments.map((c) => (
                   <div
                     key={c._id}
-                    className="bg-slate-700 p-4 rounded-lg flex justify-between"
+                    className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-400 p-6 rounded-lg hover:shadow-lg transition-all duration-300 flex justify-between items-start gap-4"
                   >
-                    <div>
-                      <p className="text-white">{c.text}</p>
-                      <p className="text-xs text-gray-400">
-                        {c.username} · {new Date(c.createdAt).toLocaleString()}
+                    <div className="flex-1">
+                      <p className="text-gray-900 font-semibold mb-2">{c.text}</p>
+                      <p className="text-sm text-gray-600 font-medium">
+                        <span className="text-blue-600 font-bold">{c.username}</span> · {new Date(c.createdAt).toLocaleString()}
                       </p>
                     </div>
 
-                    <button onClick={() => deleteComment(c._id)}>
-                      <Trash2 size={16} />
+                    <button
+                      onClick={() => deleteComment(c._id)}
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors duration-200 font-bold"
+                    >
+                      <Trash2 size={20} />
                     </button>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-gray-400">No comments yet</p>
+              <div className="text-center py-12 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg border-2 border-blue-200">
+                <p className="text-gray-600 text-lg font-semibold">💬 No comments yet. Be the first to engage!</p>
+              </div>
             )}
           </div>
         )}

@@ -465,25 +465,25 @@ const fetchProfile = async () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900">
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob"></div>
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-indigo-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-4000"></div>
       </div>
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen">
         {/* LEFT SIDEBAR */}
-        <aside className="w-64 bg-slate-900/50 backdrop-blur-lg border-r border-slate-700/50 p-6 hidden md:flex flex-col fixed h-screen left-0">
-          <h1 className="text-3xl font-black bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent mb-12 hover:scale-105 transition-transform">
+        <aside className="w-64 bg-gradient-to-b from-white to-blue-50 backdrop-blur-lg border-r-2 border-blue-200 shadow-lg p-8 hidden md:flex flex-col fixed h-screen left-0">
+          <h1 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-12 hover:scale-105 transition-transform">
             DS Blog
           </h1>
 
-          <nav className="space-y-6 flex-1 text-gray-300">
+          <nav className="space-y-3 flex-1 text-gray-600">
             <button
               onClick={() => navigate("/")}
-              className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 transform hover:translate-x-2"
+              className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-blue-100 hover:text-blue-700 hover:border-l-4 hover:border-blue-600 transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium"
             >
               <span className="text-xl">🏠</span>
               <span>Public Blogs</span>
@@ -491,7 +491,7 @@ const fetchProfile = async () => {
 
             <button
               onClick={() => navigate("/trending")}
-              className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 transform hover:translate-x-2"
+              className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-blue-100 hover:text-blue-700 hover:border-l-4 hover:border-blue-600 transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium"
             >
               <span className="text-xl">🔥</span>
               <span>Trending</span>
@@ -500,7 +500,7 @@ const fetchProfile = async () => {
             {role === "user" && (
               <button
                 onClick={() => navigate("/saved")}
-                className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-indigo-600/20 hover:text-indigo-300 transition-all duration-300 transform hover:translate-x-2"
+                className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-blue-100 hover:text-blue-700 hover:border-l-4 hover:border-blue-600 transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium"
               >
                 <span className="text-xl">💾</span>
                 <span>Saved</span>
@@ -510,7 +510,7 @@ const fetchProfile = async () => {
             {role === "admin" && (
               <button
                 onClick={() => navigate("/admin-dashboard")}
-                className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg bg-amber-600 text-amber-300 rounded-lg hover:bg-amber-600 transition-all duration-300 transform hover:translate-x-2"
+                className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg bg-gradient-to-r from-amber-100 to-yellow-100 text-amber-700 border-2 border-amber-300 hover:shadow-lg transition-all duration-300 transform hover:translate-x-1 font-semibold"
               >
                 <span className="text-xl">⚙️</span>
                 <span>Admin Panel</span>
@@ -518,21 +518,21 @@ const fetchProfile = async () => {
             )}
 
             {/* PROFILE CARD */}
-            <div className="mt-8 p-4 rounded-xl bg-linear-to-br from-indigo-600 to-blue-600 border border-indigo-500/30 hover:border-indigo-500/60 transition-all duration-300 transform hover:scale-105">
+            <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-blue-100 to-indigo-100 border-2 border-blue-300 hover:shadow-lg shadow-md transition-all duration-300 transform hover:scale-105">
               <img
                 src={
                   profile.avatar ||
                   "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
                 alt="avatar"
-                className="w-16 h-16 rounded-full object-cover mx-auto mb-3 ring-2 ring-indigo-400"
+                className="w-16 h-16 rounded-full object-cover mx-auto mb-4 ring-3 ring-blue-300"
               />
-              <p className="text-center text-sm font-semibold truncate">
+              <p className="text-center text-sm font-bold text-gray-800 truncate">
                 @{profile.username || "user"}
               </p>
               <button
                 onClick={() => navigate("/edit-profile")}
-                className="w-full mt-3 px-3 py-2 text-xs bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="w-full mt-4 px-3 py-2 text-xs bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-md"
               >
                 Edit Profile
               </button>
@@ -540,30 +540,30 @@ const fetchProfile = async () => {
           </nav>
 
           {/* LOGOUT */}
-          <div className="pt-4 border-t border-slate-700/50">
+          <div className="pt-6 border-t-2 border-blue-200">
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-600/20 rounded-lg transition-all duration-300 transform hover:translate-x-2">
+                <button className="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-100 hover:border-l-4 hover:border-red-600 rounded-lg transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-semibold">
                   <LogOut size={18} />
                   Logout
                 </button>
               </AlertDialogTrigger>
 
-              <AlertDialogContent className="bg-slate-900 border border-slate-700">
+              <AlertDialogContent className="bg-white border-2 border-blue-200">
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-white">Logout</AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-400">
-                    Are you sure you want to logout?
+                  <AlertDialogTitle className="text-gray-900">Logout Confirmation</AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-600">
+                    Are you sure you want to logout from your account?
                   </AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-slate-800 text-white hover:bg-slate-700">
+                  <AlertDialogCancel className="bg-gray-100 text-gray-900 hover:bg-gray-200 border border-gray-300">
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={logout}
-                    className="bg-red-600 text-white hover:bg-red-700"
+                    className="bg-red-600 text-white hover:bg-red-700 border border-red-700"
                   >
                     Logout
                   </AlertDialogAction>
@@ -574,21 +574,21 @@ const fetchProfile = async () => {
         </aside>
 
         {/* MAIN FEED */}
-        <main className="flex-1 ml-64 p-8 max-w-6xl">
+        <main className="flex-1 ml-64 p-10 max-w-6xl">
           {/* SEARCH BAR + NOTIFICATION */}
           <div className="mb-10 flex items-center gap-4">
-            <div className="flex-1 flex items-center gap-3 bg-slate-800/50 backdrop-blur-lg border border-slate-700/50 rounded-xl overflow-hidden group hover:border-indigo-500/50 transition-all duration-300 focus-within:border-indigo-500 focus-within:shadow-lg focus-within:shadow-indigo-500/20">
-              <Search className="w-5 h-5 text-indigo-400 ml-4" />
+            <div className="flex-1 flex items-center gap-3 bg-white backdrop-blur-lg border-2 border-blue-200 rounded-xl overflow-hidden group hover:border-blue-400 transition-all duration-300 focus-within:border-blue-500 focus-within:shadow-lg focus-within:shadow-blue-200/50 shadow-md">
+              <Search className="w-5 h-5 text-blue-600 ml-4" />
               <input
                 type="text"
                 placeholder="Search blogs, authors, topics..."
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
-                className="flex-1 px-4 py-3 bg-transparent outline-none text-white placeholder-gray-500"
+                className="flex-1 px-4 py-4 bg-transparent outline-none text-gray-900 placeholder-gray-400 font-medium"
               />
               <button
                 onClick={handleSearch}
-                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-3 font-semibold transition-all duration-300 transform hover:scale-105"
+                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-8 py-4 font-bold transition-all duration-300 transform hover:scale-105 shadow-md border border-blue-700"
               >
                 Search
               </button>
@@ -597,7 +597,7 @@ const fetchProfile = async () => {
             {/* NOTIFICATION BUTTON */}
             <button
               onClick={() => setIsNotificationPanelOpen(true)}
-              className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-lg shadow-lg shadow-indigo-500/30 transition-all duration-300 transform hover:scale-110"
+              className="relative flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg shadow-lg shadow-blue-500/40 transition-all duration-300 transform hover:scale-110 border-2 border-blue-700"
               title="Notifications"
             >
               <Bell size={20} />

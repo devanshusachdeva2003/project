@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mail, Calendar, Users } from "lucide-react";
+import { ArrowLeft, Mail, Calendar, Users, UserPlus, UserMinus } from "lucide-react";
 import { getImageUrl } from "../utlis/image";
+import { followUser, unfollowUser } from "../utlis/followService";
 
 const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -16,6 +17,8 @@ export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [userBlogs, setUserBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -39,6 +42,12 @@ export default function UserProfile() {
         const userData = await userRes.json();
         setUser(userData);
 
+        // Check if current user is following this user
+        if (currentUser && currentUser._id !== userId) {
+          const isUserFollowing = userData.followers?.includes(currentUser._id) || false;
+          setIsFollowing(isUserFollowing);
+        }
+
         // Fetch user's blogs
         const blogsRes = await fetch(`${VITE_API_BASE_URL}/api/blog`);
         if (blogsRes.ok) {
@@ -56,7 +65,40 @@ export default function UserProfile() {
     if (userId) {
       fetchUserProfile();
     }
-  }, [userId, token]);
+  }, [userId, token, currentUser]);
+
+  const handleFollowToggle = async () => {
+    if (!token || !currentUser) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setFollowLoading(true);
+      if (isFollowing) {
+        // Unfollow
+        await unfollowUser(userId, token);
+        setIsFollowing(false);
+        setUser((prev) => ({
+          ...prev,
+          followers: prev.followers.filter((id) => id !== currentUser._id),
+        }));
+      } else {
+        // Follow
+        await followUser(userId, token);
+        setIsFollowing(true);
+        setUser((prev) => ({
+          ...prev,
+          followers: [...(prev.followers || []), currentUser._id],
+        }));
+      }
+    } catch (error) {
+      console.error("Follow/Unfollow error:", error);
+      alert(error.message || "Failed to update follow status");
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -144,7 +186,7 @@ export default function UserProfile() {
               </div>
 
               {/* Follow Stats */}
-              <div className="flex gap-6 text-sm">
+              <div className="flex gap-6 text-sm mb-6">
                 <div className="flex items-center gap-1">
                   <Users size={16} className="text-indigo-400" />
                   <span>
@@ -164,6 +206,31 @@ export default function UserProfile() {
                   </span>
                 </div>
               </div>
+
+              {/* Follow/Unfollow Button */}
+              {currentUser && currentUser._id !== userId && (
+                <button
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  className={`flex items-center gap-2 px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                    isFollowing
+                      ? "bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 shadow-lg shadow-red-500/20"
+                      : "bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 shadow-lg shadow-indigo-500/20"
+                  } ${followLoading ? "opacity-70 cursor-not-allowed" : ""}`}
+                >
+                  {isFollowing ? (
+                    <>
+                      <UserMinus size={18} />
+                      Unfollow
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus size={18} />
+                      Follow
+                    </>
+                  )}
+                </button>
+              )}
             </div>
           </div>
         </div>
