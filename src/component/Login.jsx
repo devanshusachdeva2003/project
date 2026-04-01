@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Log() {
-  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
+  const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
   const navigate = useNavigate();
 
@@ -15,6 +15,7 @@ export default function Log() {
     email: "",
     password: "",
   });
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
@@ -33,17 +34,15 @@ export default function Log() {
     }
 
     try {
-
       const response = await axios.post(
         `${VITE_API_BASE_URL}/api/login`,
         loginData
       );
 
       if (response.status === 200) {
-
         const { token, user } = response.data;
 
-        // STORE EVERYTHING
+        // STORE USER DATA
         localStorage.setItem("token", token);
         localStorage.setItem("role", user.role);
         localStorage.setItem("userId", user._id);
@@ -56,7 +55,6 @@ export default function Log() {
           navigate("/blog");
         }, 1500);
       }
-
     } catch (error) {
       toast.error(error.response?.data?.message || "Login Failed");
     }
@@ -64,7 +62,8 @@ export default function Log() {
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col md:flex-row relative overflow-hidden">
-      {/* Background gradients */}
+      
+      {/* Background */}
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.15),_transparent_40%)]" />
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_40%)]" />
 
@@ -98,6 +97,7 @@ export default function Log() {
             Login
           </h2>
 
+          {/* EMAIL */}
           <input
             type="email"
             name="email"
@@ -108,7 +108,8 @@ export default function Log() {
             className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20"
           />
 
-          <div className="relative w-full mb-6">
+          {/* PASSWORD */}
+          <div className="relative w-full mb-2">
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -127,6 +128,17 @@ export default function Log() {
             </button>
           </div>
 
+          {/* ✅ FORGOT PASSWORD LINK */}
+          <p className="text-right mb-6">
+            <Link
+              to="/forgot-password"
+              className="text-sm text-indigo-400 hover:text-indigo-300 transition"
+            >
+              Forgot Password?
+            </Link>
+          </p>
+
+          {/* LOGIN BUTTON */}
           <button
             type="submit"
             className="w-full py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/30"
@@ -134,9 +146,13 @@ export default function Log() {
             Login
           </button>
 
+          {/* REGISTER LINK */}
           <p className="text-center mt-6 text-gray-400">
             Don't have an account?{" "}
-            <Link to="/" className="text-indigo-400 font-semibold hover:text-indigo-300 transition">
+            <Link
+              to="/"
+              className="text-indigo-400 font-semibold hover:text-indigo-300 transition"
+            >
               Register
             </Link>
           </p>
