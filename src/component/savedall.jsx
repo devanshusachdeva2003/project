@@ -100,66 +100,73 @@ export default function SavedPosts() {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {savedPosts.map((post) => (
-            <div
-              key={post._id}
-              className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border border-slate-700/50 p-6 rounded-2xl flex flex-col h-full shadow-xl hover:shadow-indigo-500/20 transition-all duration-300 hover:scale-105"
-            >
-              {/* Topic */}
-              {post.topic && (
-                <p className="text-xs text-indigo-400 font-semibold mb-2">
-                  #{post.topic}
-                </p>
-              )}
+          {savedPosts.map((post) => {
+            
+            // 🔥 Remove inline black styles
+            const cleanContent = post.content
+              ?.replace(/color:\s*black[^;"]*;?/gi, "");
 
-              {/* Image */}
-              {post.coverImage && (
-                <img
-                  src={getImageUrl(post.coverImage)}
-                  className="w-full h-60 object-cover rounded-lg mb-4 max-w-full"
-                  alt="cover"
-                />
-              )}
-
-              {/* Title */}
-              <h2 className="text-xl font-bold text-white mb-2 break-words">
-                {post.title}
-              </h2>
-
-              {/* ✅ FIXED CONTENT */}
+            return (
               <div
-                className="text-gray-300 mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full [&*]:text-gray-300"
-                style={{
-                  wordBreak: "break-word",
-                  overflowWrap: "break-word",
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: post.content || "",
-                }}
-              />
+                key={post._id}
+                className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border border-slate-700/50 p-6 rounded-2xl flex flex-col h-full shadow-xl hover:shadow-indigo-500/20 transition-all duration-300 hover:scale-105"
+              >
+                {/* Topic */}
+                {post.topic && (
+                  <p className="text-xs text-indigo-400 font-semibold mb-2">
+                    #{post.topic}
+                  </p>
+                )}
 
-              {/* Button */}
-              <div className="mt-auto mb-4">
-                <Link
-                  to={`/blog/${post._id}`}
-                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  View More
-                </Link>
-              </div>
+                {/* Image */}
+                {post.coverImage && (
+                  <img
+                    src={getImageUrl(post.coverImage)}
+                    className="w-full h-60 object-cover rounded-lg mb-4"
+                    alt="cover"
+                  />
+                )}
 
-              {/* Unsave */}
-              <div className="flex gap-6 mt-2">
-                <button
-                  onClick={() => unsavePost(post._id)}
-                  className="flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
-                >
-                  <Bookmark size={18} />
-                  Unsave
-                </button>
+                {/* Title */}
+                <h2 className="text-xl font-bold text-white mb-2 break-words">
+                  {post.title}
+                </h2>
+
+                {/* ✅ FIXED CONTENT (FORCED WHITE) */}
+                <div
+                  className="mb-4 text-sm line-clamp-3 overflow-hidden break-words w-full max-w-full [&_*]:!text-white"
+                  style={{
+                    wordBreak: "break-word",
+                    overflowWrap: "break-word",
+                  }}
+                  dangerouslySetInnerHTML={{
+                    __html: cleanContent || "",
+                  }}
+                />
+
+                {/* Button */}
+                <div className="mt-auto mb-4">
+                  <Link
+                    to={`/blog/${post._id}`}
+                    className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-300 hover:scale-105"
+                  >
+                    View More
+                  </Link>
+                </div>
+
+                {/* Unsave */}
+                <div className="flex gap-6 mt-2">
+                  <button
+                    onClick={() => unsavePost(post._id)}
+                    className="flex items-center gap-2 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-500 hover:to-amber-600 text-white px-3 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+                  >
+                    <Bookmark size={18} />
+                    Unsave
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
