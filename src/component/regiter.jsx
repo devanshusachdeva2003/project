@@ -139,7 +139,7 @@ export default function Register() {
               value={formData.password}
               onChange={handleChange}
               className="input pr-10"
-              className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
+              className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500 pr-10"
             />
             <button
               type="button"
@@ -170,7 +170,7 @@ export default function Register() {
             value={formData.securityAnswer}
             onChange={handleChange}
             className="input"
-            className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"
+            className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"
           />
 
           {/* BUTTON */}
