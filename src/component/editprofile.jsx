@@ -139,7 +139,9 @@ export default function EditProfile() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900">
+    <div className="min-h-screen bg-slate-900 text-white relative overflow-hidden">
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.15),_transparent_40%)]"></div>
+      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_40%)]"></div>
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob"></div>
         <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-2000"></div>
@@ -148,7 +150,7 @@ export default function EditProfile() {
 
       <div className="relative z-10 flex">
         {/* SIDEBAR */}
-        <aside className="w-64 bg-gradient-to-b from-white to-blue-50 backdrop-blur-lg border-r-2 border-blue-200 shadow-lg p-8 fixed h-screen hidden md:flex flex-col">
+        <aside className="w-64 bg-gradient-to-b from-slate-800/50 to-slate-900/50 backdrop-blur-lg border-r border-slate-700/50 shadow-lg p-8 fixed h-screen hidden md:flex flex-col">
           <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-10">
             Dashboard
           </h2>
@@ -180,7 +182,7 @@ export default function EditProfile() {
             Edit Profile
           </h1>
 
-          <div className="bg-gradient-to-br from-white to-blue-50 backdrop-blur-lg border-2 border-blue-200 shadow-xl p-10 rounded-2xl mb-8">
+          <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border-2 border-slate-700/50 shadow-xl p-10 rounded-2xl mb-8">
             {/* AVATAR SECTION */}
             <div className="flex flex-col md:flex-row gap-10 items-start md:items-center mb-10 pb-10 border-b-2 border-blue-200">
               <div className="flex flex-col items-center gap-4">
@@ -197,7 +199,7 @@ export default function EditProfile() {
                   📝 {postCount} Blogs
                 </p>
 
-                <label className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 hover:shadow-lg px-6 py-3 rounded-lg cursor-pointer text-sm font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center gap-2 border border-blue-700 shadow-md">
+                <label className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 hover:shadow-lg hover:shadow-indigo-500/20 px-6 py-3 rounded-lg cursor-pointer text-sm font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center gap-2 border border-indigo-600 shadow-md">
                   <Upload size={16} />
                   Upload
                   <input
@@ -223,13 +225,13 @@ export default function EditProfile() {
                     setProfile({ ...profile, name: e.target.value })
                   }
                   placeholder="Full Name"
-                  className="bg-white border-2 border-blue-200 focus:border-blue-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-blue-200/50 font-medium"
+                  className="bg-slate-700/50 border-2 border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 font-medium"
                 />
 
                 <input
                   value={profile.email}
                   disabled
-                  className="bg-gray-100 border-2 border-gray-300 text-gray-600 p-4 rounded-lg cursor-not-allowed font-medium"
+                  className="bg-slate-700/30 border-2 border-slate-600/30 text-gray-400 p-4 rounded-lg cursor-not-allowed font-medium"
                 />
 
                 <input
@@ -238,7 +240,7 @@ export default function EditProfile() {
                     setProfile({ ...profile, username: e.target.value })
                   }
                   placeholder="@username"
-                  className="bg-white border-2 border-blue-200 focus:border-blue-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-blue-200/50 font-medium md:col-span-2"
+                  className="bg-slate-700/50 border-2 border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 font-medium md:col-span-2"
                 />
               </div>
             </div>
@@ -252,14 +254,14 @@ export default function EditProfile() {
                   setProfile({ ...profile, bio: e.target.value })
                 }
                 placeholder="Tell us about yourself..."
-                className="w-full bg-white border-2 border-blue-200 focus:border-blue-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-blue-200/50 min-h-[140px] font-medium"
+                className="w-full bg-slate-700/50 border-2 border-slate-600/50 focus:border-indigo-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-indigo-500/20 min-h-[140px] font-medium"
               />
             </div>
 
             {/* SAVE */}
             <button
               onClick={handleUpdate}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-10 py-4 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-blue-500/40 border border-blue-700 text-lg"
+              className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-10 py-4 rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/40 border border-indigo-600 text-lg"
             >
               Save Changes
             </button>
@@ -267,7 +269,7 @@ export default function EditProfile() {
 
           {/* PASSWORD SECTION */}
           {showPassword && (
-            <div className="bg-gradient-to-br from-white to-red-50 backdrop-blur-lg border-2 border-red-200 shadow-xl p-10 rounded-2xl">
+            <div className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-lg border-2 border-slate-700/50 shadow-xl p-10 rounded-2xl">
               <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent mb-8 flex items-center gap-3">
                 <Lock size={28} className="text-red-600" />
                 Change Password
@@ -281,7 +283,7 @@ export default function EditProfile() {
                   onChange={(e) =>
                     setPasswords({ ...passwords, oldPassword: e.target.value })
                   }
-                  className="bg-white border-2 border-red-200 focus:border-red-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-200/50 font-medium"
+                  className="bg-slate-700/50 border-2 border-slate-600/50 focus:border-red-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-500/20 font-medium"
                 />
 
                 <input
@@ -291,7 +293,7 @@ export default function EditProfile() {
                   onChange={(e) =>
                     setPasswords({ ...passwords, newPassword: e.target.value })
                   }
-                  className="bg-white border-2 border-red-200 focus:border-red-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-200/50 font-medium"
+                  className="bg-slate-700/50 border-2 border-slate-600/50 focus:border-red-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-500/20 font-medium"
                 />
 
                 <input
@@ -304,7 +306,7 @@ export default function EditProfile() {
                       confirmPassword: e.target.value,
                     })
                   }
-                  className="bg-white border-2 border-red-200 focus:border-red-500 text-gray-900 placeholder-gray-400 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-200/50 font-medium"
+                  className="bg-slate-700/50 border-2 border-slate-600/50 focus:border-red-500 text-white placeholder-gray-500 p-4 rounded-lg outline-none transition-all duration-300 focus:shadow-lg focus:shadow-red-500/20 font-medium"
                 />
 
                 <button

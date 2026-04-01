@@ -158,8 +158,7 @@ export default function PublicBlogs() {
         )}
 
         {/* TABS SECTION */}
-        <Tabs defaultValue="all" className="w-full">
-<Tabs defaultValue="all" className="w-full flex flex-col items-center">
+        <Tabs defaultValue="all" className="w-full flex flex-col items-center">
 
   {/* TAB BUTTONS */}
   <TabsList className="flex flex-row justify-center gap-3 mb-12 w-auto bg-transparent">
@@ -189,20 +188,6 @@ export default function PublicBlogs() {
   ))}
 
 </Tabs>
-
-          {/* ALL BLOGS */}
-          <TabsContent value="all">
-            <BlogGrid posts={posts} />
-          </TabsContent>
-
-          {/* FILTERED BLOGS */}
-          {topics.slice(1).map((topic) => (
-            <TabsContent key={topic} value={topic}>
-              <BlogGrid posts={posts.filter((p) => p.topic === topic)} />
-            </TabsContent>
-          ))}
-
-        </Tabs>
 
       </div>
     </div>
