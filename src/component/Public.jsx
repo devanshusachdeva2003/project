@@ -54,17 +54,17 @@ export default function PublicBlogs() {
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_40%)]" />
 
       {/* HEADER */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-blue-50/95 to-slate-50/80 backdrop-blur-lg border-b border-blue-200/50 px-6 py-4">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-slate-900/95 to-slate-800/90 backdrop-blur-lg border-b border-slate-700/50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-blue-400 bg-clip-text text-transparent">
             📖 Blog Platform
           </h1>
 
           <div className="flex gap-4 items-center">
             {token ? (
               <>
-                <span className="text-gray-700 font-semibold">
-                  Welcome, <span className="text-blue-600">{userName}</span>
+                <span className="text-white font-semibold">
+                  Welcome, <span className="text-indigo-400">{userName}</span>
                 </span>
                 <button
                   onClick={() => navigate("/blog")}
@@ -89,7 +89,7 @@ export default function PublicBlogs() {
               <>
                 <Link
                   to="/login"
-                  className="text-blue-600 font-semibold hover:text-blue-700 transition"
+                  className="text-indigo-400 font-semibold hover:text-indigo-300 transition"
                 >
                   Log in
                 </Link>
