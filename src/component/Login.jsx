@@ -35,7 +35,7 @@ export default function Log() {
 
     try {
       const response = await axios.post(
-        `${VITE_API_BASE_URL}/api/login`,
+        `${VITE_API_BASE_URL}/api/auth/login`,
         loginData
       );
 

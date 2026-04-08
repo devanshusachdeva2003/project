@@ -16,7 +16,7 @@ import {
   TabsList,
   TabsTrigger,
   TabsContent,
-} from "@/components/ui/tabs";
+} from "../components/ui/tabs";
 
 export default function PublicBlogs() {
   const [posts, setPosts] = useState([]);
@@ -68,19 +68,19 @@ export default function PublicBlogs() {
                 </span>
                 <button
                   onClick={() => navigate("/blog")}
-                  className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-blue-400/30"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-cyan-400/40"
                 >
                   📝 My Blog
                 </button>
                 <button
                   onClick={() => navigate("/edit-profile")}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-purple-400/30"
+                  className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-emerald-400/40"
                 >
                   👤 Profile
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-red-400/30"
+                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-md shadow-orange-400/40"
                 >
                   🚪 Logout
                 </button>

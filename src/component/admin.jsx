@@ -34,7 +34,7 @@ export default function AdminDashboard() {
     // Verify role with backend
     const verifyRole = async () => {
       try {
-        const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

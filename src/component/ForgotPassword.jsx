@@ -1,147 +1,112 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [emailSubmitted, setEmailSubmitted] = useState(false);
 
   const API = import.meta.env.VITE_API_BASE_URL;
 
-  // ================= STEP 1: GET QUESTION =================
-  const getQuestion = async () => {
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+
     if (!email) {
-      toast.warning("Please enter email");
+      toast.error("Please enter your email");
       return;
     }
 
-    try {
-      console.log("Fetching question for:", email);
+    // Simple email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast.error("Please enter a valid email");
+      return;
+    }
 
-      const res = await fetch(`${API}/api/auth/get-question`, {
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${API}/api/auth/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.toLowerCase() }),
       });
 
-      const data = await res.json();
-      console.log("QUESTION RESPONSE:", data);
+      const data = await response.json();
 
-      if (!res.ok) throw new Error(data.message);
+      if (!response.ok) {
+        throw new Error(data.message || "Failed to send reset code");
+      }
 
-      setQuestion(data.question);
-      toast.success("Security question loaded");
+      setEmailSubmitted(true);
+      toast.success("✅ Reset code sent! Check your email");
+      
+      // Redirect to reset password page after 2 seconds
+      setTimeout(() => {
+        navigate("/reset-password");
+      }, 2000);
     } catch (err) {
+      toast.error("❌ " + (err.message || "Failed to send reset code"));
       console.error(err);
-      toast.error(err.message);
-    }
-  };
-
-  // ================= STEP 2: RESET PASSWORD =================
-  const resetPassword = async () => {
-    console.log("RESET CLICKED:", { email, answer, newPassword });
-
-    if (!email || !answer || !newPassword) {
-      toast.warning("Please fill all fields");
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API}/api/auth/reset-password`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          answer,
-          newPassword,
-        }),
-      });
-
-      const data = await res.json();
-      console.log("RESET RESPONSE:", data);
-
-      if (!res.ok) throw new Error(data.message);
-
-      toast.success("Password reset successful");
-
-      // OPTIONAL: clear form
-      setEmail("");
-      setAnswer("");
-      setNewPassword("");
-      setQuestion("");
-    } catch (err) {
-      console.error(err);
-      toast.error(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
-      
-      <div className="bg-slate-800/60 backdrop-blur-lg border border-slate-700 p-6 rounded-2xl w-80 shadow-xl">
+      <div className="bg-slate-800/60 backdrop-blur-lg border border-slate-700 p-8 rounded-2xl w-96 shadow-xl">
         
-        <h2 className="text-xl font-bold mb-4 text-center">
-          Forgot Password
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="text-2xl font-bold mb-2">🔐 Forgot Password?</h2>
+          <p className="text-gray-400 text-sm">
+            Enter your email and we'll send you a reset code
+          </p>
+        </div>
 
-        {!question ? (
-          <>
-            {/* EMAIL */}
+        {!emailSubmitted ? (
+          <form onSubmit={handleForgotPassword}>
+            {/* EMAIL INPUT */}
             <input
               type="email"
-              placeholder="Enter email"
-              className="w-full p-2 mb-4 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500"
+              placeholder="Enter your email"
+              className="w-full p-3 mb-6 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500 transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
             />
 
-            {/* NEXT BUTTON */}
+            {/* SUBMIT BUTTON */}
             <button
-              onClick={getQuestion}
-              className="w-full bg-indigo-600 py-2 rounded hover:bg-indigo-500 transition"
+              type="submit"
+              className="w-full bg-indigo-600 py-3 rounded font-semibold hover:bg-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              disabled={loading}
             >
-              Next
+              {loading ? "Sending..." : "Send Reset Code"}
             </button>
-          </>
+          </form>
         ) : (
-          <>
-            {/* QUESTION */}
-            <p className="mb-3 text-sm text-gray-300">
-              {question}
+          <div className="text-center">
+            <div className="mb-4 text-5xl">📧</div>
+            <p className="text-gray-400 mb-6">
+              Reset code sent to <strong>{email}</strong>
             </p>
-
-            {/* ANSWER */}
-            <input
-              type="text"
-              placeholder="Your Answer"
-              className="w-full p-2 mb-3 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500"
-              value={answer}
-              onChange={(e) => setAnswer(e.target.value)}
-            />
-
-            {/* NEW PASSWORD */}
-            <input
-              type="password"
-              placeholder="New Password"
-              className="w-full p-2 mb-4 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-
-            {/* RESET BUTTON */}
-            <button
-              onClick={resetPassword}
-              className="w-full bg-green-600 py-2 rounded hover:bg-green-500 transition"
-            >
-              Reset Password
-            </button>
-          </>
+            <p className="text-gray-400 text-sm">
+              Redirecting to reset password page...
+            </p>
+          </div>
         )}
+
+        <p className="text-center text-gray-400 text-sm mt-6">
+          Remember your password?{" "}
+          <a href="/login" className="text-indigo-400 hover:underline font-semibold">
+            Login here
+          </a>
+        </p>
       </div>
     </div>
   );

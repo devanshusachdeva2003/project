@@ -15,8 +15,6 @@ export default function Register() {
     email: "",
     password: "",
     role: "user",
-    securityQuestion: "",
-    securityAnswer: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -28,35 +26,21 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const {
-      name,
-      username,
-      email,
-      password,
-      securityQuestion,
-      securityAnswer,
-    } = formData;
+    const { name, username, email, password } = formData;
 
-    if (
-      !name ||
-      !username ||
-      !email ||
-      !password ||
-      !securityQuestion ||
-      !securityAnswer
-    ) {
+    if (!name || !username || !email || !password) {
       toast.warning("Please fill all fields");
       return;
     }
 
     try {
       const response = await axios.post(
-        `${VITE_API_BASE_URL}/api/register`,
+        `${VITE_API_BASE_URL}/api/auth/register`,
         formData
       );
 
       if (response.status === 200 || response.status === 201) {
-        toast.success("Registration Successful!");
+        toast.success("Registration Successful! Check your email 📧");
 
         setTimeout(() => {
           navigate("/login");
@@ -70,10 +54,6 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col md:flex-row relative overflow-hidden">
       
-      {/* Background */}
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(99,102,241,0.15),_transparent_40%)]" />
-      <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_bottom_right,_rgba(59,130,246,0.15),_transparent_40%)]" />
-
       {/* LEFT */}
       <div className="w-full md:w-1/2 flex flex-col justify-center items-center text-white p-10">
         <div className="max-w-md text-center">
@@ -103,14 +83,15 @@ export default function Register() {
           </h2>
 
           {/* NAME */}
-         <input
-  type="text"
-  name="name"
-  placeholder="Name"
-  value={formData.name}
-  onChange={handleChange}
-  className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
-/>
+          <input
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
+          />
+
           {/* USERNAME */}
           <input
             type="text"
@@ -118,18 +99,19 @@ export default function Register() {
             placeholder="Username"
             value={formData.username}
             onChange={handleChange}
-            className="input"
             className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
           />
 
-         <input
-  type="email"
-  name="email"
-  placeholder="Email"
-  value={formData.email}
-  onChange={handleChange}
-  className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
-/>
+          {/* EMAIL */}
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500"
+          />
+
           {/* PASSWORD */}
           <div className="relative w-full mb-4">
             <input
@@ -138,7 +120,6 @@ export default function Register() {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="input pr-10"
               className="w-full px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white placeholder-gray-400 rounded-lg outline-none focus:border-indigo-500 pr-10"
             />
             <button
@@ -149,29 +130,6 @@ export default function Register() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-
-        <select
-  name="securityQuestion"
-  value={formData.securityQuestion}
-  onChange={handleChange}
-  className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"
->
-            <option value="">Select Security Question</option>
-            <option>What is your pet name?</option>
-            <option>What is your school name?</option>
-            <option>What is your favorite food?</option>
-          </select>
-
-          {/* 🔐 SECURITY ANSWER */}
-          <input
-            type="text"
-            name="securityAnswer"
-            placeholder="Answer"
-            value={formData.securityAnswer}
-            onChange={handleChange}
-            className="input"
-            className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"className="w-full mb-4 px-4 py-3 bg-slate-700/50 border border-slate-600/50 text-white rounded-lg outline-none focus:border-indigo-500"
-          />
 
           {/* BUTTON */}
           <button

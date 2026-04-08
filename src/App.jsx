@@ -10,8 +10,8 @@ import BlogDetails from "./component/blogdetail";
 import SavedPosts from "./component/savedall";
 import TrendingPosts from "./component/trending";
 import EditProfile from "./component/editprofile";
-import UserProfile from "./component/userprofile";
 import ForgotPassword from "./component/ForgotPassword";
+import ResetPassword from "./component/ResetPassword";
 import "./index.css";
 
 const IsAdminRoute = ({ children }) => {
@@ -41,16 +41,15 @@ function App() {
         <Route path="/blog" element={<BlogApp />} />
         <Route path="/login" element={<Log />} />
         <Route path="/register" element={<Register />} />
-       <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/blog/:id" element={<BlogDetails />} />
         <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/profile/:userId" element={<UserProfile />} />
 
         {/* SAVED POSTS PAGE */}
         <Route path="/trending" element={<TrendingPosts />} />
         <Route path="/saved" element={<SavedPosts />} />
-
         <Route
           path="/admin-dashboard"
           element={

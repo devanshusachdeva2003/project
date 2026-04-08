@@ -12,6 +12,32 @@ const decodeHtmlEntities = (html) => {
   return textArea.value;
 };
 
+// ✅ Helper function to safely parse and format scheduled date
+const formatScheduledDate = (dateString) => {
+  try {
+    if (!dateString) return "Invalid Date";
+    // Handle datetime-local format ("2026-04-05T14:30") and ISO format
+    let date;
+    if (dateString.includes('T') && !dateString.includes('Z')) {
+      // datetime-local format - parse directly
+      date = new Date(dateString + ':00'); // Add seconds for parsing
+    } else {
+      date = new Date(dateString);
+    }
+    if (isNaN(date.getTime())) return "Invalid Date";
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } catch (e) {
+    console.error("Date parsing error:", e);
+    return "Invalid Date";
+  }
+};
+
 import {
   Pencil,
   Trash2,
@@ -36,7 +62,7 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
   AlertDialogAction,
-} from "@/components/ui/alert-dialog";
+} from "../components/ui/alert-dialog";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -114,7 +140,8 @@ const [profile, setProfile] = useState({
 });
 const [isEditOpen, setIsEditOpen] = useState(false);
 const [editName, setEditName] = useState("");
-  const [editingId, setEditingId] = useState(null);
+const [scheduledAt, setScheduledAt] = useState("");
+const [editingId, setEditingId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isNotificationPanelOpen, setIsNotificationPanelOpen] = useState(false);
 
@@ -150,7 +177,7 @@ const [editName, setEditName] = useState("");
 
     const verifyRole = async () => {
       try {
-        const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
+        const res = await fetch(`${VITE_API_BASE_URL}/api/auth/me`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -196,6 +223,14 @@ const [editName, setEditName] = useState("");
       });
       const data = await res.json();
 
+      console.log("📬 Fetched posts from API:", data);
+      
+      // Log scheduled posts details
+      const scheduledPosts = data.filter(p => !p.isPublished && p.scheduledAt);
+      if (scheduledPosts.length > 0) {
+        console.log("⏰ Scheduled posts:", scheduledPosts);
+      }
+
       const updated = data.map((post) => ({
         ...post,
         isSaved: post.saves?.some((id) => id.toString() === userId),
@@ -223,7 +258,7 @@ useEffect(() => {
 // FETCH PROFILE
 const fetchProfile = async () => {
   try {
-    const res = await fetch(`${VITE_API_BASE_URL}/api/me`, {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -288,6 +323,39 @@ const fetchProfile = async () => {
       return;
     }
 
+    // ✅ Validate scheduled date
+    if (scheduledAt) {
+      // datetime-local format: "2026-04-05T14:30"
+      // Parse manually to preserve local time (not UTC conversion)
+      const [datePart, timePart] = scheduledAt.split('T');
+      if (!datePart || !timePart) {
+        toast.error("❌ Invalid date format.");
+        return;
+      }
+      
+      // Parse date and time components
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes] = timePart.split(':').map(Number);
+      
+      // Create date in local timezone
+      const scheduledDate = new Date(year, month - 1, day, hours, minutes, 0);
+      const now = new Date();
+      
+      if (isNaN(scheduledDate.getTime())) {
+        toast.error("❌ Invalid date format. Please select a valid date and time.");
+        return;
+      }
+      
+      if (scheduledDate <= now) {
+        toast.error("❌ Scheduled date must be in the future.");
+        return;
+      }
+      
+      console.log("📅 Input:", scheduledAt);
+      console.log("📅 Parsed Local Date:", scheduledDate.toString());
+      console.log("📅 ISO String:", scheduledDate.toISOString());
+    }
+
     const url = editingId
       ? `${VITE_API_BASE_URL}/api/blog/${editingId}`
       : `${VITE_API_BASE_URL}/api/blog`;
@@ -299,7 +367,19 @@ const fetchProfile = async () => {
     formData.append("content", content);
     formData.append("topic", topic);
     if (coverImage) formData.append("coverImage", coverImage);
-
+    
+if (scheduledAt) {
+  // Parse datetime-local to proper Date object in local timezone
+  const [datePart, timePart] = scheduledAt.split('T');
+  const [year, month, day] = datePart.split('-').map(Number);
+  const [hours, minutes] = timePart.split(':').map(Number);
+  
+  const scheduledDate = new Date(year, month - 1, day, hours, minutes, 0);
+  const isoString = scheduledDate.toISOString();
+  
+  formData.append("scheduledAt", isoString);
+  console.log("📤 Converting:", scheduledAt, "->", isoString);
+}
     try {
       console.log("🚀 Submitting blog to:", url);
       console.log("📝 Method:", method);
@@ -321,14 +401,19 @@ const fetchProfile = async () => {
         throw new Error(responseData.message || `HTTP ${res.status}: ${res.statusText}`);
       }
 
-      toast.success(editingId ? "✅ Post Updated" : "✅ Post Published");
+      const message = scheduledAt 
+        ? `✅ Post Scheduled for ${formatScheduledDate(scheduledAt)}`
+        : (editingId ? "✅ Post Updated" : "✅ Post Published");
+      
+      toast.success(message);
 
       setTitle("");
-      setContent("");
-      setTopic("");
-      setCoverImage(null);
-      setCoverPreview("");
-      setEditingId(null);
+setContent("");
+setTopic("");
+setScheduledAt("");
+setCoverImage(null);
+setCoverPreview("");
+setEditingId(null);
 
       if (quillRef.current) {
         const editor = quillRef.current.getEditor();
@@ -370,6 +455,21 @@ const fetchProfile = async () => {
     setContent(post.content);
     if (post.coverImage)
       setCoverPreview(getImageUrl(post.coverImage));
+    
+    // ✅ Set scheduled date if it exists
+    if (post.scheduledAt) {
+      try {
+        const date = new Date(post.scheduledAt);
+        const isoString = date.toISOString().slice(0, 16);
+        setScheduledAt(isoString);
+      } catch (e) {
+        console.log("Error parsing scheduled date:", e);
+        setScheduledAt("");
+      }
+    } else {
+      setScheduledAt("");
+    }
+    
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -663,15 +763,47 @@ const fetchProfile = async () => {
                   className="w-full h-48 object-cover mb-4 rounded-lg"
                 />
               )}
-              <ReactQuill
-                ref={quillRef}
-                value={content}
-                onChange={setContent}
-                theme="snow"
-                modules={quillModules}
-                placeholder="Write your post content here..."
-                className="mb-4 quill-editor"
-              />
+             <ReactQuill
+  ref={quillRef}
+  value={content}
+  onChange={setContent}
+  theme="snow"
+  modules={quillModules}
+  placeholder="Write your post content here..."
+  className="mb-4 quill-editor"
+/>
+
+{/* ✅ ADD HERE */}
+<div className="mb-4">
+  <label className="text-sm text-gray-400 mb-2 block">
+    Schedule Post (Optional) ⏰
+  </label>
+  <div className="flex gap-2 items-center">
+    <input
+      type="datetime-local"
+      value={scheduledAt}
+      onChange={(e) => setScheduledAt(e.target.value)}
+      min={new Date().toISOString().slice(0, 16)}
+      className="flex-1 bg-slate-700/50 border border-slate-600/50 text-white p-3 rounded-lg focus:border-indigo-500 focus:outline-none"
+      title="Select a future date and time to schedule this post"
+    />
+    {scheduledAt && (
+      <button
+        type="button"
+        onClick={() => setScheduledAt("")}
+        className="bg-red-600/50 hover:bg-red-600 text-white px-4 py-3 rounded-lg font-medium transition-all"
+        title="Clear scheduled date"
+      >
+        Clear
+      </button>
+    )}
+  </div>
+  {scheduledAt && (
+    <p className="text-xs text-green-400 mt-1">
+      ✅ Post will publish on {formatScheduledDate(scheduledAt)}
+    </p>
+  )}
+</div>
               <button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/50">
                 <PlusCircle size={20} />
                 {editingId ? "Update Post" : "Publish Post"}
@@ -701,12 +833,19 @@ const fetchProfile = async () => {
                   className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer overflow-hidden"
                 >
                  <div className="w-full">
+                    {/* AUTHOR & DATE */}
+                    <div className="flex items-center gap-2 mb-3 text-xs text-gray-400">
+                      <span className="text-indigo-400 font-semibold">👤 {post.author || "Unknown"}</span>
+                      <span>📆 {post.createdAt ? new Date(post.createdAt).toLocaleDateString() : "Date unavailable"}</span>
+                    </div>
+                    
                     {/* LEFT: Text */}
                     <div className="w-full">
-                      <p className="text-xs text-gray-400 mb-2">
-                        👤 {post.author || "Anonymous"} · 📅{" "}
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </p>
+                      {!post.isPublished && post.scheduledAt && (
+  <p className="text-yellow-400 text-xs mb-2">
+    ⏰ Scheduled for {formatScheduledDate(post.scheduledAt)}
+  </p>
+)}
                       <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3">
                         {post.title}
                       </h2>

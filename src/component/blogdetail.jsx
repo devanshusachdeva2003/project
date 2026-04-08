@@ -29,25 +29,30 @@ export default function BlogDetails() {
   const currentUser = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
   // FETCH BLOG
-  const fetchBlog = async () => {
-    try {
-      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setBlog(data);
-      
-      // Set author ID for follow functionality
-      if (data.authorId) {
-        setAuthorId(data.authorId);
-        // Check if current user is following the author
-        if (currentUser && data.followers && Array.isArray(data.followers)) {
-          setIsFollowing(data.followers.includes(currentUser._id));
-        }
-      }
-    } catch {}
-  };
+ const fetchBlog = async () => {
+  try {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/blog/${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
 
+    setBlog(data);
+
+    // ✅ ADD THIS BLOCK HERE
+    if (data.authorId) {
+      setAuthorId(data.authorId);
+
+      if (currentUser && Array.isArray(data.followers)) {
+        const isUserFollowing = data.followers.some(
+          (followerId) => followerId === currentUser._id
+        );
+        setIsFollowing(isUserFollowing);
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+};
   useEffect(() => {
     fetchBlog();
   }, [id]);
