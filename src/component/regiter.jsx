@@ -47,7 +47,9 @@ export default function Register() {
         }, 1500);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Registration Failed");
+      const errorMsg = error.response?.data?.message || error.response?.data?.error || "Registration Failed";
+      console.error("Registration Error:", error.response?.data);
+      toast.error(errorMsg);
     }
   };
 

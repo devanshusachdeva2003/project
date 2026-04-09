@@ -39,7 +39,8 @@ export default function ForgotPassword() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Failed to send reset code");
+        console.error("API Error Response:", data);
+        throw new Error(data.message || data.details || "Failed to send reset code");
       }
 
       setEmailSubmitted(true);
@@ -50,8 +51,9 @@ export default function ForgotPassword() {
         navigate("/reset-password");
       }, 2000);
     } catch (err) {
-      toast.error("❌ " + (err.message || "Failed to send reset code"));
-      console.error(err);
+      console.error("Forgot Password Error:", err);
+      const errorMsg = err.message || "Failed to send reset code";
+      toast.error("❌ " + errorMsg);
     } finally {
       setLoading(false);
     }
