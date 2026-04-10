@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Lock, Upload } from "lucide-react";
+import { followUser, unfollowUser } from "../utlis/followService";
 
 export default function EditProfile() {
   const [profile, setProfile] = useState({
@@ -13,6 +14,8 @@ export default function EditProfile() {
   const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL ;
   const [avatarFile, setAvatarFile] = useState(null);
   const [postCount, setPostCount] = useState(0); // ✅ blog count
+  const [followers, setFollowers] = useState([]);
+  const [followingList, setFollowingList] = useState([]);
 
   const [passwords, setPasswords] = useState({
     oldPassword: "",
@@ -23,6 +26,30 @@ export default function EditProfile() {
   const [showPassword, setShowPassword] = useState(false);
 
   const token = localStorage.getItem("token");
+
+  // helper: fetch user details for an array of ids (or pass through objects)
+  const fetchUserDetails = async (items) => {
+    const ids = items.map((i) => (typeof i === "string" ? i : i._id?.toString()));
+    try {
+      const results = await Promise.all(
+        ids.map(async (id) => {
+          try {
+            const res = await fetch(`${VITE_API_BASE_URL}/api/users/profile/${id}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!res.ok) return null;
+            return await res.json();
+          } catch (err) {
+            return null;
+          }
+        })
+      );
+
+      return results.filter(Boolean);
+    } catch (err) {
+      return [];
+    }
+  };
 
   // ✅ FETCH PROFILE (UPDATED API)
   useEffect(() => {
@@ -46,6 +73,15 @@ export default function EditProfile() {
   : "",
 });
         setPostCount(data.postCount || 0); // ✅ blog count
+        setFollowers(data.followers || []);
+        setFollowingList(data.following || []);
+        // if followers/following are ids, fetch user details
+        if (data.followers && data.followers.length > 0) {
+          fetchUserDetails(data.followers).then(setFollowers).catch(()=>{});
+        }
+        if (data.following && data.following.length > 0) {
+          fetchUserDetails(data.following).then(setFollowingList).catch(()=>{});
+        }
       } catch {
         // Error loading profile
       }
@@ -96,6 +132,16 @@ export default function EditProfile() {
       setAvatarFile(null);
       localStorage.setItem("user", JSON.stringify(data));
 
+      // update followers/following if returned (and fetch details if needed)
+      setFollowers(data.followers || []);
+      setFollowingList(data.following || []);
+      if (data.followers && data.followers.length > 0) {
+        fetchUserDetails(data.followers).then(setFollowers).catch(()=>{});
+      }
+      if (data.following && data.following.length > 0) {
+        fetchUserDetails(data.following).then(setFollowingList).catch(()=>{});
+      }
+
       alert("Profile Updated ✅");
     } catch (err) {
       alert("Update failed");
@@ -135,6 +181,42 @@ export default function EditProfile() {
       });
     } catch {
       alert("Failed to update password");
+    }
+  };
+
+  // follow/unfollow a user from the followers list (follow back)
+  const toggleFollowBack = async (target) => {
+    if (!token) return;
+
+    const targetId = typeof target === "string" ? target : target._id?.toString() || target;
+
+    const isFollowingTarget = (profile.following || []).some(
+      (f) => (typeof f === "string" ? f : f._id?.toString()) === targetId
+    );
+
+    try {
+      if (isFollowingTarget) {
+        const res = await unfollowUser(targetId, token);
+        // update local following list
+        setProfile((prev) => ({
+          ...prev,
+          following: (prev.following || []).filter(
+            (f) => (typeof f === "string" ? f : f._id?.toString()) !== targetId
+          ),
+        }));
+        setFollowingList((prev) => prev.filter((u) => (u._id || u).toString() !== targetId));
+      } else {
+        const res = await followUser(targetId, token);
+        // fetch user details and append
+        const details = await fetchUserDetails([targetId]);
+        if (details && details[0]) {
+          setFollowingList((prev) => [...(prev || []), details[0]]);
+        } else {
+          setProfile((prev) => ({ ...prev, following: [...(prev.following || []), targetId] }));
+        }
+      }
+    } catch (err) {
+      console.error("Follow toggle failed", err);
     }
   };
 
@@ -265,6 +347,76 @@ export default function EditProfile() {
             >
               Save Changes
             </button>
+          </div>
+
+          {/* Followers list */}
+          <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 mb-8">
+            <h2 className="text-2xl font-bold mb-4">Followers ({followers?.length || 0})</h2>
+
+            {followers.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {followers.map((f) => {
+                  const fid = typeof f === "string" ? f : f._id?.toString() || "";
+                  const name = typeof f === "string" ? fid.slice(0, 6) : f.name || f.username || fid.slice(0, 6);
+                  const avatar = typeof f === "string" ? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : (f.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png");
+
+                  const isFollowing = (profile.following || []).some(
+                    (x) => (typeof x === "string" ? x : x._id?.toString()) === fid
+                  );
+
+                  return (
+                    <div key={fid} className="flex items-center gap-4 bg-slate-900/30 p-3 rounded-lg">
+                      <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover" />
+                      <div className="flex-1">
+                        <div className="font-semibold">{name}</div>
+                        <div className="text-sm text-gray-400">@{(typeof f === 'object' && f.username) || fid.slice(0,8)}</div>
+                      </div>
+                      <button
+                        onClick={() => toggleFollowBack(f)}
+                        className={`px-3 py-1 rounded-lg font-medium ${isFollowing ? 'bg-red-600' : 'bg-indigo-600'}`}
+                      >
+                        {isFollowing ? 'Unfollow' : 'Follow'}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-400">No followers yet.</p>
+            )}
+          </div>
+
+          {/* Following list */}
+          <div className="bg-slate-800/40 border border-slate-700 rounded-2xl p-6 mb-8">
+            <h2 className="text-2xl font-bold mb-4">Following ({followingList?.length || 0})</h2>
+
+            {followingList.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {followingList.map((f) => {
+                  const fid = typeof f === "string" ? f : f._id?.toString() || "";
+                  const name = typeof f === "string" ? fid.slice(0, 6) : f.name || f.username || fid.slice(0, 6);
+                  const avatar = typeof f === "string" ? "https://cdn-icons-png.flaticon.com/512/149/149071.png" : (f.avatar || "https://cdn-icons-png.flaticon.com/512/149/149071.png");
+
+                  return (
+                    <div key={fid} className="flex items-center gap-4 bg-slate-900/30 p-3 rounded-lg">
+                      <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover" />
+                      <div className="flex-1">
+                        <div className="font-semibold">{name}</div>
+                        <div className="text-sm text-gray-400">@{(typeof f === 'object' && f.username) || fid.slice(0,8)}</div>
+                      </div>
+                      <button
+                        onClick={() => toggleFollowBack(f)}
+                        className={`px-3 py-1 rounded-lg font-medium bg-red-600`}
+                      >
+                        Unfollow
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="text-gray-400">Not following anyone yet.</p>
+            )}
           </div>
 
           {/* PASSWORD SECTION */}

@@ -42,9 +42,12 @@ export default function UserProfile() {
         const userData = await userRes.json();
         setUser(userData);
 
-        // Check if current user is following this user
+        // Check if current user is following this user (handle both id strings and populated objects)
         if (currentUser && currentUser._id !== userId) {
-          const isUserFollowing = userData.followers?.includes(currentUser._id) || false;
+          const isUserFollowing =
+            userData.followers?.some(
+              (f) => (typeof f === "string" ? f : f._id?.toString()) === currentUser._id
+            ) || false;
           setIsFollowing(isUserFollowing);
         }
 
@@ -81,7 +84,9 @@ export default function UserProfile() {
         setIsFollowing(false);
         setUser((prev) => ({
           ...prev,
-          followers: prev.followers.filter((id) => id !== currentUser._id),
+          followers: (prev.followers || []).filter(
+            (f) => (typeof f === "string" ? f : f._id?.toString()) !== currentUser._id
+          ),
         }));
       } else {
         // Follow

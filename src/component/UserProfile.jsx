@@ -33,33 +33,35 @@ export default function UserProfile() {
 
   if (!user) return <div>Loading...</div>;
 
-  // check follow status
+  // check follow status (handle both populated objects and id strings)
   const isFollowing = user.followers?.some(
-    (f) => f._id === currentUser?._id
+    (f) => (typeof f === "string" ? f : f._id?.toString()) === currentUser?._id
   );
 
   // follow
   const handleFollow = async () => {
-    await fetch(`${VITE_API_BASE_URL}/api/users/follow/${id}`, {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/users/follow/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    fetchUser(); // refresh
+    if (res.ok) fetchUser(); // refresh
+    else console.error("Failed to follow");
   };
 
   // unfollow
   const handleUnfollow = async () => {
-    await fetch(`${VITE_API_BASE_URL}/api/users/unfollow/${id}`, {
+    const res = await fetch(`${VITE_API_BASE_URL}/api/users/unfollow/${id}`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    fetchUser(); // refresh
+    if (res.ok) fetchUser(); // refresh
+    else console.error("Failed to unfollow");
   };
 
   return (
