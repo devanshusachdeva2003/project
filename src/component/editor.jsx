@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { getImageUrl } from "../utlis/image";
@@ -128,6 +128,8 @@ export default function BlogEditor() {
   const [topic, setTopic] = useState("");
   const [activeTopic, setActiveTopic] = useState("all");
 const [activePage, setActivePage] = useState("home");
+  const [viewMode, setViewMode] = useState("all"); // kept for backward compatibility
+  const location = useLocation();
   const [blogPosts, setBlogPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -236,20 +238,84 @@ const [editingId, setEditingId] = useState(null);
         isSaved: post.saves?.some((id) => id.toString() === userId),
       }));
 
-      setBlogPosts(updated);
-      setFilteredPosts(updated);
+      let merged = updated;
+
+      // If user logged in, also fetch their own posts (including drafts)
+      if (token) {
+        try {
+          const meRes = await fetch(`${VITE_API_BASE_URL}/api/blog/me`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (meRes.ok) {
+            const myPosts = await meRes.json();
+            let myMapped = myPosts.map((post) => ({
+              ...post,
+              isSaved: post.saves?.some((id) => id.toString() === userId),
+            }));
+
+            // Only include drafts that belong to the current user (or admins)
+            if (role !== "admin") {
+              myMapped = myMapped.filter((p) => String(p.authorId) === String(userId));
+            }
+
+            // merge by _id, prefer myPosts data for matching ids
+            const map = new Map();
+            for (let p of updated) map.set(p._id, p);
+            for (let p of myMapped) map.set(p._id, p);
+            merged = Array.from(map.values()).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          }
+        } catch (err) {
+          console.warn("Could not fetch user posts (me):", err);
+        }
+      }
+
+      setBlogPosts(merged);
+      setFilteredPosts(merged);
     } catch {
       toast.error("Failed to fetch posts");
     } finally {
       setIsLoading(false);
     }
-  }, [token, userId]);
+  }, [token, userId, role]);
 
 // 1️⃣ Load posts + profile on first load
 useEffect(() => {
   fetchPosts();
   fetchProfile();
 }, [fetchPosts]);
+
+// If navigated here with an editId (from Drafts), open that draft for editing
+useEffect(() => {
+  const editId = location.state?.editId;
+  if (!editId) return;
+
+  // try to find the post in current blogPosts, otherwise fetch user's posts
+  const found = blogPosts.find((p) => p._id === editId);
+  if (found) {
+    startEdit(found);
+    // clear navigation state
+    window.history.replaceState({}, document.title);
+    return;
+  }
+
+  // fetch my posts and find
+  (async () => {
+    try {
+      const res = await fetch(`${VITE_API_BASE_URL}/api/blog/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      const post = data.find((p) => p._id === editId);
+      if (post) {
+        startEdit(post);
+        window.history.replaceState({}, document.title);
+      }
+    } catch (err) {
+      console.error("Failed to open draft for edit", err);
+    }
+  })();
+}, [location, blogPosts]);
 
 // 2️⃣ Reload profile when page changes (VERY IMPORTANT)
 useEffect(() => {
@@ -282,12 +348,22 @@ const fetchProfile = async () => {
 };
   // ---------------- TOPIC FILTER ----------------
   useEffect(() => {
-    if (activeTopic === "all") {
-      setFilteredPosts(blogPosts);
+    let list = [...blogPosts];
+
+    // If viewMode is drafts, show only drafts belonging to current user (or admins)
+    if (viewMode === "drafts") {
+      list = list.filter((p) => !p.isPublished && (role === "admin" || String(p.authorId) === String(userId)));
     } else {
-      setFilteredPosts(blogPosts.filter((post) => post.topic === activeTopic));
+      // normal view: show only published posts (drafts are kept separate in Drafts page)
+      list = list.filter((p) => p.isPublished);
     }
-  }, [activeTopic, blogPosts]);
+
+    if (activeTopic === "all") {
+      setFilteredPosts(list);
+    } else {
+      setFilteredPosts(list.filter((post) => post.topic === activeTopic));
+    }
+  }, [activeTopic, blogPosts, viewMode, role, userId]);
 
  
   // ---------------- SEARCH ----------------
@@ -425,6 +501,67 @@ setEditingId(null);
     } catch (error) {
       console.error("❌ Blog save error:", error);
       toast.error(error.message || "Save failed");
+    }
+  };
+
+  // Save as draft (does not require title/content validation)
+  const handleSaveDraft = async () => {
+    if (!token) {
+      toast.error("You must be logged in to save a draft");
+      navigate("/login");
+      return;
+    }
+
+    const url = editingId
+      ? `${VITE_API_BASE_URL}/api/blog/${editingId}`
+      : `${VITE_API_BASE_URL}/api/blog`;
+
+    const method = editingId ? "PUT" : "POST";
+
+    const formData = new FormData();
+    formData.append("title", title || "");
+    formData.append("content", content || "");
+    formData.append("topic", topic || "");
+    formData.append("isDraft", "true");
+    if (coverImage) formData.append("coverImage", coverImage);
+
+    // include scheduledAt if set (draft may keep schedule)
+    if (scheduledAt) {
+      const [datePart, timePart] = scheduledAt.split('T');
+      const [year, month, day] = datePart.split('-').map(Number);
+      const [hours, minutes] = timePart.split(':').map(Number);
+      const scheduledDate = new Date(year, month - 1, day, hours, minutes, 0);
+      formData.append("scheduledAt", scheduledDate.toISOString());
+    }
+
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      const responseData = await res.json();
+      if (!res.ok) throw new Error(responseData.message || "Save draft failed");
+
+      toast.success(editingId ? "Draft updated" : "Draft saved");
+      setTitle("");
+      setContent("");
+      setTopic("");
+      setScheduledAt("");
+      setCoverImage(null);
+      setCoverPreview("");
+      setEditingId(null);
+      if (quillRef.current) {
+        const editor = quillRef.current.getEditor();
+        editor.setContents([], "silent");
+      }
+      fetchPosts();
+        // after saving a draft, go to Drafts page where the draft is listed
+        navigate("/drafts");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.message || "Save draft failed");
     }
   };
 
@@ -604,6 +741,17 @@ setEditingId(null);
               </button>
             )}
 
+            {/* DRAFTS (visible to logged in users) */}
+            {(role === "user" || role === "admin") && (
+              <button
+                onClick={() => navigate("/drafts")}
+                className={`group flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium ${location.pathname === '/drafts' ? 'bg-pink-600/10 text-pink-400 border-pink-500/30' : 'hover:bg-slate-700/50 hover:text-pink-400'}`}
+              >
+                <Pencil size={16} />
+                <span>Drafts</span>
+              </button>
+            )}
+
             {role === "admin" && (
               <button
                 onClick={() => navigate("/admin-dashboard")}
@@ -719,6 +867,22 @@ setEditingId(null);
                 {t}
               </button>
             ))}
+
+            {/* Drafts toggle */}
+            <div className="ml-4 flex items-center gap-2">
+              <button
+                onClick={() => setViewMode("all")}
+                className={`px-4 py-2 rounded-full text-sm font-medium ${viewMode === "all" ? "bg-slate-700 text-white" : "bg-transparent text-gray-400 border border-slate-700/30"}`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => setViewMode("drafts")}
+                className={`px-4 py-2 rounded-full text-sm font-medium ${viewMode === "drafts" ? "bg-pink-600 text-white" : "bg-transparent text-gray-400 border border-slate-700/30"}`}
+              >
+                Drafts
+              </button>
+            </div>
           </div>
 
           {/* CREATE / EDIT FORM */}
@@ -804,10 +968,21 @@ setEditingId(null);
     </p>
   )}
 </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/50">
-                <PlusCircle size={20} />
-                {editingId ? "Update Post" : "Publish Post"}
-              </button>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={handleSaveDraft}
+                  className="flex-1 bg-slate-700/50 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all duration-300"
+                >
+                  <Loader2 size={18} />
+                  Save Draft
+                </button>
+
+                <button type="submit" className="flex-1 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white px-6 py-3 rounded-lg font-bold flex items-center justify-center gap-2 transition-all duration-300 transform hover:scale-105 shadow-lg shadow-indigo-500/50">
+                  <PlusCircle size={20} />
+                  {editingId ? "Update Post" : "Publish Post"}
+                </button>
+              </div>
             </form>
           )}
 
@@ -829,8 +1004,15 @@ setEditingId(null);
               {filteredPosts.map((post) => (
                 <div
                   key={post._id}
-                  onClick={() => navigate(`/blog/${post._id}`)}
-                  className="group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer overflow-hidden"
+                  onClick={() => {
+                    if (post.isPublished) return navigate(`/blog/${post._id}`);
+                    // if draft and current user is owner or admin, open editor
+                    if (role === 'admin' || String(post.authorId) === String(userId)) {
+                      startEdit(post);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
+                  className={`group bg-gradient-to-br from-slate-800/50 to-slate-900/30 backdrop-blur-lg border border-slate-700/50 hover:border-indigo-500/50 p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:shadow-indigo-500/20 transition-all duration-300 ${post.isPublished ? 'cursor-pointer' : 'cursor-pointer opacity-95'} overflow-hidden`}
                 >
                  <div className="w-full">
                     {/* AUTHOR & DATE */}
@@ -844,6 +1026,11 @@ setEditingId(null);
                       {!post.isPublished && post.scheduledAt && (
   <p className="text-yellow-400 text-xs mb-2">
     ⏰ Scheduled for {formatScheduledDate(post.scheduledAt)}
+  </p>
+)}
+                      {!post.isPublished && !post.scheduledAt && (
+  <p className="text-pink-400 text-xs mb-2">
+    ✏️ Draft
   </p>
 )}
                       <h2 className="text-2xl font-bold text-white group-hover:text-indigo-400 transition-colors mb-3">

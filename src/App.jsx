@@ -3,6 +3,7 @@ import BlogApp from "./component/editor";
 import PublicBlogs from "./component/Public";
 import Hero from "./component/hero";
 import Nav from "./component/nav";
+import Drafts from "./component/Drafts";
 import Register from "./component/regiter";
 import Log from "./component/Login";
 import AdminDashboard from "./component/admin";
@@ -39,6 +40,7 @@ function App() {
         />
 
         <Route path="/blog" element={<BlogApp />} />
+        <Route path="/drafts" element={<Drafts />} />
         <Route path="/login" element={<Log />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
