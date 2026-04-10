@@ -16,6 +16,7 @@ export default function EditProfile() {
   const [postCount, setPostCount] = useState(0); // ✅ blog count
   const [followers, setFollowers] = useState([]);
   const [followingList, setFollowingList] = useState([]);
+  const [followLoadingId, setFollowLoadingId] = useState(null);
 
   const [passwords, setPasswords] = useState({
     oldPassword: "",
@@ -195,8 +196,9 @@ export default function EditProfile() {
     );
 
     try {
+      setFollowLoadingId(targetId);
       if (isFollowingTarget) {
-        const res = await unfollowUser(targetId, token);
+        await unfollowUser(targetId, token);
         // update local following list
         setProfile((prev) => ({
           ...prev,
@@ -206,15 +208,16 @@ export default function EditProfile() {
         }));
         setFollowingList((prev) => prev.filter((u) => (u._id || u).toString() !== targetId));
       } else {
-        const res = await followUser(targetId, token);
+        await followUser(targetId, token);
         // fetch user details and append
         const details = await fetchUserDetails([targetId]);
+        // always update profile.following so UI toggles correctly
+        setProfile((prev) => ({ ...prev, following: [...(prev.following || []), targetId] }));
         if (details && details[0]) {
           setFollowingList((prev) => [...(prev || []), details[0]]);
-        } else {
-          setProfile((prev) => ({ ...prev, following: [...(prev.following || []), targetId] }));
         }
       }
+      setFollowLoadingId(null);
     } catch (err) {
       console.error("Follow toggle failed", err);
     }
@@ -373,9 +376,10 @@ export default function EditProfile() {
                       </div>
                       <button
                         onClick={() => toggleFollowBack(f)}
-                        className={`px-3 py-1 rounded-lg font-medium ${isFollowing ? 'bg-red-600' : 'bg-indigo-600'}`}
+                        disabled={followLoadingId === fid}
+                        className={`px-3 py-1 rounded-lg font-medium ${isFollowing ? 'bg-red-600' : 'bg-indigo-600'} ${followLoadingId === fid ? 'opacity-60 cursor-not-allowed' : ''}`}
                       >
-                        {isFollowing ? 'Unfollow' : 'Follow'}
+                        {followLoadingId === fid ? '...' : (isFollowing ? 'Unfollow' : 'Follow')}
                       </button>
                     </div>
                   );
@@ -406,9 +410,10 @@ export default function EditProfile() {
                       </div>
                       <button
                         onClick={() => toggleFollowBack(f)}
-                        className={`px-3 py-1 rounded-lg font-medium bg-red-600`}
+                        disabled={followLoadingId === fid}
+                        className={`px-3 py-1 rounded-lg font-medium bg-red-600 ${followLoadingId === fid ? 'opacity-60 cursor-not-allowed' : ''}`}
                       >
-                        Unfollow
+                        {followLoadingId === fid ? '...' : 'Unfollow'}
                       </button>
                     </div>
                   );
