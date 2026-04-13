@@ -715,7 +715,7 @@ setEditingId(null);
         {/* LEFT SIDEBAR */}
         <aside className="w-64 bg-gradient-to-b from-slate-800/50 to-slate-900/50 backdrop-blur-lg border-r border-slate-700/50 shadow-lg p-8 hidden md:flex flex-col fixed h-screen left-0">
           <img 
-  src="public/images.png" 
+  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScZ_S0UGrzZLuw69vo2ZI8JBBoVRaCil3s8g&s" 
   alt="Logo"
   className="w-20 h-20 object-cover rounded-full mx-auto"
 />
