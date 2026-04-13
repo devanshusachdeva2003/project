@@ -1,21 +1,22 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [token, setToken] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [tokenFromUrl, setTokenFromUrl] = useState(false);
 
   const API = import.meta.env.VITE_API_BASE_URL;
 
   const handleResetPassword = async (e) => {
     e.preventDefault();
 
-    if (!email || !code || !newPassword || !confirmPassword) {
+    if (!email || !token || !newPassword || !confirmPassword) {
       toast.error("All fields are required");
       return;
     }
@@ -30,10 +31,7 @@ export default function ResetPassword() {
       return;
     }
 
-    if (code.length !== 6) {
-      toast.error("Code must be 6 digits");
-      return;
-    }
+    // Removed validation for code length since we are using token
 
     setLoading(true);
 
@@ -45,7 +43,7 @@ export default function ResetPassword() {
         },
         body: JSON.stringify({
           email: email.toLowerCase(),
-          code,
+          token,
           newPassword,
         }),
       });
@@ -68,6 +66,21 @@ export default function ResetPassword() {
     }
   };
 
+  // Read token and email from URL if present
+  const location = useLocation();
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const t = params.get("token");
+    const e = params.get("email");
+    if (t) {
+      setToken(t);
+      setTokenFromUrl(true);
+    }
+    if (e) {
+      setEmail(decodeURIComponent(e));
+    }
+  }, [location.search]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-black text-white">
       <div className="bg-slate-800/60 backdrop-blur-lg border border-slate-700 p-8 rounded-2xl w-96 shadow-xl">
@@ -88,17 +101,23 @@ export default function ResetPassword() {
             disabled={loading}
           />
 
-          {/* RESET CODE */}
-          <label className="block text-sm text-gray-400 mb-2">Reset Code</label>
-          <input
-            type="text"
-            placeholder="Enter 6-digit code"
-            maxLength="6"
-            className="w-full p-3 mb-4 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500 transition text-center tracking-widest text-lg font-bold"
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ""))}
-            disabled={loading}
-          />
+          {/* TOKEN (from email link) */}
+          {!tokenFromUrl && (
+            <>
+              <label className="block text-sm text-gray-400 mb-2">Reset Token</label>
+              <input
+                type="text"
+                placeholder="Enter reset token from email"
+                className="w-full p-3 mb-4 bg-slate-700 text-white rounded outline-none border border-slate-600 focus:border-indigo-500 transition"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                disabled={loading}
+              />
+            </>
+          )}
+          {tokenFromUrl && (
+            <p className="text-sm text-green-300 mb-4">Using token from the reset link.</p>
+          )}
 
           {/* NEW PASSWORD */}
           <label className="block text-sm text-gray-400 mb-2">New Password</label>
