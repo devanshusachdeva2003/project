@@ -150,6 +150,7 @@ export default function UserProfile() {
                 <img
                   src={getImageUrl(user.avatar)}
                   alt={user.name}
+                  loading="lazy"
                   className="w-32 h-32 rounded-xl object-cover border-2 border-indigo-500"
                 />
               ) : (

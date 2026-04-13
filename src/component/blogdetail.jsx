@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft, Trash2, UserPlus, UserMinus, Loader2 } from "lucide-react";
 import parse from "html-react-parser";
@@ -50,7 +50,6 @@ export default function BlogDetails() {
       }
     }
   } catch (err) {
-    console.log(err);
   }
 };
   useEffect(() => {
@@ -129,9 +128,9 @@ export default function BlogDetails() {
   };
 
   // 🔥 CLEAN HTML CONTENT (REMOVE INLINE COLORS & DECODE ENTITIES)
-  const cleanContent =
-    blog &&
-    parse(decodeHtmlEntities(blog.content), {
+  const cleanContent = useMemo(() => {
+    if (!blog) return null;
+    return parse(decodeHtmlEntities(blog.content), {
       replace: (domNode) => {
         if (domNode.attribs) {
           delete domNode.attribs.style;
@@ -139,6 +138,7 @@ export default function BlogDetails() {
         }
       },
     });
+  }, [blog]);
 
   if (!blog) {
     return (
@@ -172,6 +172,7 @@ export default function BlogDetails() {
             <img
               src={getImageUrl(blog.coverImage)}
               alt="blog cover"
+              loading="lazy"
               className="w-full h-64 md:h-96 object-cover rounded-xl mb-8 shadow-lg hover:shadow-xl transition-shadow duration-300"
             />
           )}

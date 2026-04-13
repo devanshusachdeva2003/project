@@ -126,6 +126,7 @@ export default function PublicBlogs() {
               <img
                 src={getImageUrl(featured.coverImage)}
                 alt={featured.title}
+                loading="lazy"
                 className="w-full h-full object-cover md:h-[420px]"
               />
             )}
@@ -249,6 +250,7 @@ function BlogGrid({ posts }) {
                 <img
                   src={getImageUrl(post.coverImage)}
                   alt={post.title}
+                  loading="lazy"
                   className="w-full h-52 object-cover rounded-t-2xl cursor-pointer hover:scale-105 transition duration-300"
                   onClick={() => {}}
                 />

@@ -4,6 +4,10 @@ import ReactQuill from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css";
 import { getImageUrl } from "../utlis/image";
 import NotificationPanel from "./notificationPanel";
+import { House } from 'lucide-react';
+import { Flame  } from 'lucide-react';
+import { Pen   } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 // Function to decode HTML entities
 const decodeHtmlEntities = (html) => {
@@ -710,16 +714,21 @@ setEditingId(null);
       <div className="relative z-10 flex min-h-screen">
         {/* LEFT SIDEBAR */}
         <aside className="w-64 bg-gradient-to-b from-slate-800/50 to-slate-900/50 backdrop-blur-lg border-r border-slate-700/50 shadow-lg p-8 hidden md:flex flex-col fixed h-screen left-0">
-          <h1 className="text-3xl font-black bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-12 hover:scale-105 transition-transform">
-            DS Blog
+          <img 
+  src="public/images.png" 
+  alt="Logo"
+  className="w-20 h-20 object-cover rounded-full mx-auto"
+/>
+          <h1 className="text-3xl font-black text-center bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-6 hover:scale-105 transition-transform">
+            {profile && profile.username ? `${profile.username} Blog` : 'DS Blog'}
           </h1>
 
-          <nav className="space-y-3 flex-1 text-gray-400">
+          <nav className="space-y-3 flex-1 text-gray-400 overflow-y-auto pr-2">
             <button
               onClick={() => navigate("/")}
               className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-700/50 hover:text-indigo-400 hover:border-l-4 hover:border-indigo-500 transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium"
             >
-              <span className="text-xl">🏠</span>
+              <span className="text-xl"><House /></span>
               <span>Public Blogs</span>
             </button>
 
@@ -727,7 +736,7 @@ setEditingId(null);
               onClick={() => navigate("/trending")}
               className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg hover:bg-slate-700/50 hover:text-indigo-400 hover:border-l-4 hover:border-indigo-500 transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-medium"
             >
-              <span className="text-xl">🔥</span>
+              <span className="text-xl"><Flame /></span>
               <span>Trending</span>
             </button>
 
@@ -757,35 +766,36 @@ setEditingId(null);
                 onClick={() => navigate("/admin-dashboard")}
                 className="group flex items-center gap-3 w-full px-4 py-3 rounded-lg bg-gradient-to-r from-amber-600/30 to-yellow-600/30 text-amber-300 border-2 border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/20 transition-all duration-300 transform hover:translate-x-1 font-semibold"
               >
-                <span className="text-xl">⚙️</span>
+                <span className="text-xl"><Settings /></span>
                 <span>Admin Panel</span>
               </button>
             )}
 
-            {/* PROFILE CARD */}
-            <div className="mt-8 p-6 rounded-xl bg-gradient-to-br from-indigo-600/20 to-blue-600/20 border-2 border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/20 shadow-md transition-all duration-300 transform hover:scale-105">
-              <img
-                src={
-                  profile.avatar ||
-                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }
-                alt="avatar"
-                className="w-16 h-16 rounded-full object-cover mx-auto mb-4 ring-3 ring-indigo-500"
-              />
-              <p className="text-center text-sm font-bold text-white truncate">
-                @{profile.username || "user"}
-              </p>
-              <button
-                onClick={() => navigate("/edit-profile")}
-                className="w-full mt-4 px-3 py-2 text-xs bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-md"
-              >
-                Edit Profile
-              </button>
-            </div>
           </nav>
 
+          {/* PROFILE CARD (fixed under menu) */}
+          <div className="mt-6 p-6 rounded-xl bg-gradient-to-br from-indigo-600/20 to-blue-600/20 border-2 border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/20 shadow-md transition-all duration-300 transform hover:scale-105">
+            <img
+              src={
+                profile.avatar ||
+                "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+              }
+              alt="avatar"
+              className="w-16 h-16 rounded-full object-cover mx-auto mb-4 ring-3 ring-indigo-500"
+            />
+            <p className="text-center text-sm font-bold text-white truncate">
+              @{profile.username || "user"}
+            </p>
+            <button
+              onClick={() => navigate("/edit-profile")}
+              className="w-full mt-4 px-3 py-2 text-xs bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-bold transition-all duration-300 transform hover:scale-105 shadow-md"
+            >
+              Edit Profile
+            </button>
+          </div>
+
           {/* LOGOUT */}
-          <div className="pt-6 border-t border-slate-700/50">
+          <div className="pt-6 border-t border-slate-700/50 mt-auto">
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <button className="w-full flex items-center gap-3 px-4 py-3 text-red-400 hover:bg-red-600/20 hover:border-l-4 hover:border-red-500 rounded-lg transition-all duration-300 transform hover:translate-x-1 border-l-4 border-transparent font-semibold">

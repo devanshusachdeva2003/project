@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import BlogApp from "./component/editor";
+import BlogEditor from "./component/Editior";
 import PublicBlogs from "./component/Public";
 import Hero from "./component/hero";
 import Nav from "./component/nav";
@@ -39,7 +39,7 @@ function App() {
           }
         />
 
-        <Route path="/blog" element={<BlogApp />} />
+        <Route path="/blog" element={<BlogEditor />} />
         <Route path="/drafts" element={<Drafts />} />
         <Route path="/login" element={<Log />} />
         <Route path="/register" element={<Register />} />

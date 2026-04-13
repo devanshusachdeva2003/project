@@ -78,6 +78,7 @@ export default function TrendingPosts() {
               {post.coverImage && (
                 <img
                   src={getImageUrl(post.coverImage)}
+                  loading="lazy"
                   className="w-full h-60 object-cover rounded-lg mb-4"
                   alt="cover"
                 />

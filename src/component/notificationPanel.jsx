@@ -29,7 +29,6 @@ export default function NotificationPanel({ isOpen, onClose }) {
 
       const data = await res.json();
       setNotifications(data);
-      console.log("📬 Notifications loaded:", data);
     } catch (err) {
       console.error("Error fetching notifications:", err);
       toast.error("Failed to load notifications");

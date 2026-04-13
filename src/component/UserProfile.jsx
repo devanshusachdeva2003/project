@@ -66,7 +66,7 @@ export default function UserProfile() {
 
   return (
     <div className="p-10 text-white">
-      <img src={user.avatar} alt="" className="w-24 h-24 rounded-full" />
+      <img src={user.avatar} alt="" loading="lazy" className="w-24 h-24 rounded-full" />
 
       <h2>{user.name}</h2>
       <p>@{user.username}</p>
